@@ -1,3 +1,13 @@
-const Home = () => {};
+import {
+    Fade
+} from '@mui/material'
 
-export default Home;
+const Home = () => {
+    return (
+        <Fade>
+
+        </Fade>
+    )
+}
+
+export default Home
