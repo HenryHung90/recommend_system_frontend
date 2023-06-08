@@ -1,26 +1,69 @@
+import { useNavigate } from "react-router-dom";
+
 import { Box, Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 
 import CreateIcon from "@mui/icons-material/Create";
 import {
+    Home,
     BarChart,
     YoutubeSearchedFor,
     Bookmarks,
     Group,
 } from "@mui/icons-material";
 
+import { handleNavBtnClick } from "../../../common/navBtnClick";
+
 //Nav Bar 功能列表
 //Type 表是哪一個功能 : SideContent 功能內容 : Status 是否啟用
 const NavList = [
-    { Type: "Avatar", SideContent: "", Status: true },
-    { Type: "Start", SideContent: "開始練習", Status: true, SideDetail: "藉由以往的答題經驗給予適合您練習的題目", SideImg: "url(../media/Start.jpg)" },
-    { Type: "Statistics", SideContent: "統計資料", Status: false, SideDetail: "觀看您作答時間與作答成績等統計資料", SideImg: "url(../media/Statistics.jpg)" },
-    { Type: "History", SideContent: "作答紀錄", Status: false, SideDetail: "觀看您曾經做過的題目並能對其複習、溫故知新", SideImg: "url(../media/History.jpg)" },
-    { Type: "Bookmarks", SideContent: "收藏區", Status: false, SideDetail: "能夠找到你精選的題目，並且能製作筆記", SideImg: "url(../media/Bookmarks.jpg)" },
-    { Type: "Interactive", SideContent: "互動", Status: false, SideDetail: "看看你的同學們作答的平均以及為其出題", SideImg: "url(../media/Interactive.jpg)" },
+    { Type: "Avatar", SideContent: "", Status: true, NavOnly: true },
+    { Type: "Home", SideContent: "首頁", Status: true, NavOnly: true },
+    {
+        Type: "Exam",
+        SideContent: "開始練習",
+        Status: true,
+        SideDetail: "藉由以往的答題經驗給予適合您練習的題目",
+        SideImg: "url(../media/Exam.jpg)",
+        NavOnly: false,
+    },
+    {
+        Type: "Statistics",
+        SideContent: "統計資料",
+        Status: false,
+        SideDetail: "觀看您作答時間與作答成績等統計資料",
+        SideImg: "url(../media/Statistics.jpg)",
+        NavOnly: false,
+    },
+    {
+        Type: "History",
+        SideContent: "作答紀錄",
+        Status: false,
+        SideDetail: "觀看您曾經做過的題目並能對其複習、溫故知新",
+        SideImg: "url(../media/History.jpg)",
+        NavOnly: false,
+    },
+    {
+        Type: "Bookmarks",
+        SideContent: "收藏區",
+        Status: false,
+        SideDetail: "能夠找到你精選的題目，並且能製作筆記",
+        SideImg: "url(../media/Bookmarks.jpg)",
+        NavOnly: false,
+    },
+    {
+        Type: "Interactive",
+        SideContent: "互動",
+        Status: false,
+        SideDetail: "看看你的同學們作答的平均以及為其出題",
+        SideImg: "url(../media/Interactive.jpg)",
+        NavOnly: false,
+    },
 ];
 
 const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
+    const NavLocation = useNavigate();
+
     const NavIconBoxStyle = {
         width: 58,
         height: 58,
@@ -35,13 +78,21 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
         height: 30,
     };
 
+    //處理NavBar的開關
     const handleNavBarOpen = () => {
         setNavBarOpen(open => !open);
     };
 
+    //是否正在該頁面上
+    const isOnThisPage = Type => {
+        return window.location.pathname.split("/")[1] == Type.toLowerCase();
+    };
+
+    // 決定是哪一種Icon給予Icon樣式
     const handleIcon = Type => {
         switch (Type) {
             case "Avatar":
+                NavList[0].SideContent = UserName;
                 return (
                     <Avatar
                         sx={{
@@ -53,7 +104,13 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                         {UserName[0]}
                     </Avatar>
                 );
-            case "Start":
+            case "Home":
+                return (
+                    <Box sx={NavIconBoxStyle}>
+                        <Home sx={NavIconStyle}></Home>
+                    </Box>
+                );
+            case "Exam":
                 return (
                     <Box sx={NavIconBoxStyle}>
                         <CreateIcon sx={NavIconStyle}></CreateIcon>
@@ -86,21 +143,24 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                     </Box>
                 );
             default:
-                break
+                break;
         }
-    }
+    };
 
     return (
         <Box
             id="Home_NavBar"
             sx={{
                 position: "absolute",
-                height: "100vh",
-                overflowY: 'hidden',
+                height: "100% - 30px",
                 transitionDuration: "0.5s",
                 width: NavBarOpen ? "15vw" : "2.5vw",
                 maxWidth: "300px",
                 backgroundColor: "rgb(64,54,47)",
+                opacity: NavBarOpen ? "1" : "0.7",
+                "&:hover": {
+                    opacity: "1",
+                },
                 zIndex: "1000",
                 display: "flex",
                 flexDirection: "column",
@@ -108,12 +168,18 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                 justifyContent: "left",
                 padding: "30px",
                 boxShadow: "3px 0 5px 2px rgb(0,0,0)",
+                borderRadius: "0 0 20px 0",
+                zIndex: "1000",
             }}
             onClick={handleNavBarOpen}
         >
             {NavList.map((value, index) => {
                 return (
                     <Box
+                        id={`Home_NavBtn_${value.Type}`}
+                        onClick={e =>
+                            handleNavBtnClick(e, NavBarOpen, NavLocation)
+                        }
                         key={index}
                         sx={{
                             width: "100%",
@@ -126,10 +192,15 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                             borderRadius: "10px",
                             "&:hover": {
                                 backgroundColor:
-                                    NavBarOpen && value.Status && value.Type !== "Avatar"
+                                    NavBarOpen &&
+                                    value.Status &&
+                                    value.Type !== "Avatar"
                                         ? "rgba(255, 255, 255, 0.4)"
                                         : "",
                             },
+                            backgroundColor: isOnThisPage(value.Type)
+                                ? "rgb(183,74,95)"
+                                : "none",
                             opacity: value.Status ? "1" : "0.5",
                         }}
                     >
@@ -150,7 +221,7 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                             {value.SideContent}
                         </Box>
                     </Box>
-                )
+                );
             })}
         </Box>
     );

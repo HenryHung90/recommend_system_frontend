@@ -9,6 +9,7 @@ import {
 import Error from './views/Error/Error'
 import Home from './views/Home/Home'
 import Login from './views/Login/Login'
+import Exam from './views/Exam/Exam'
 
 const App = () => {
     const [Auth, setAuth] = useState(false)
@@ -21,6 +22,7 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path='/home' element={<Home UserName={UserName} />} />
+                    <Route path="/exam" element={<Exam UserName={UserName} />} />
                     <Route path='/' element={<Login />} />
                     <Route path='*' element={<Error />} />
                 </Routes>
