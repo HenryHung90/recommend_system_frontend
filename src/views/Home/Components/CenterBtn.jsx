@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import $ from "jquery";
 
 import { Container, Box, Grid } from "@mui/material";
+import { Main_Container } from "../../../common/ContainerStyle";
 
 import {
     handleCenterBtnClick,
@@ -11,20 +13,7 @@ import {
 const CenterBtn = ({ NavList, NavBarOpen }) => {
     const NavLocation = useNavigate();
     return (
-        <Container
-            id={"Home_Container"}
-            sx={{
-                width: "80vw",
-                maxWidth: "1600px !important",
-                height: "100vh",
-                padding: "15px",
-                overflowY: "auto",
-                overflowX: "hidden",
-                marginLeft: 12,
-                transitionDuration: "0.5s",
-                opacity: NavBarOpen ? "0.3" : "1",
-            }}
-        >
+        <Container id={"Home_Container"} sx={Main_Container(NavBarOpen)}>
             {NavList.map((value, index) => {
                 if (!value.NavOnly) {
                     return (
@@ -45,12 +34,10 @@ const CenterBtn = ({ NavList, NavBarOpen }) => {
                                 width: "90%",
                                 marginTop: 2,
                                 opacity: value.Status ? 1 : 0.5,
-                                transitionDuration: "0.5s",
-                                backgroundImage:
-                                    "linear-gradient(to right, rgb(214,164,135),rgb(255,255,255))",
-                                backgroundPositionX: "-600px",
                                 backgroundRepeat: "no-repeat",
+                                transitionDuration: "0.5s",
                                 boxShadow: "0px 0px 10px rgba(0,0,0,0.4)",
+                                overflow: "hidden",
                                 "&:hover": {
                                     transform: value.Status
                                         ? "scale(1.02)"
@@ -65,6 +52,7 @@ const CenterBtn = ({ NavList, NavBarOpen }) => {
                                     backgroundImage: value.SideImg,
                                     backgroundSize: "cover",
                                     height: 150,
+                                    zIndex: 100,
                                 }}
                             ></Grid>
                             <Grid
@@ -75,6 +63,7 @@ const CenterBtn = ({ NavList, NavBarOpen }) => {
                                     flexDirection: "column",
                                     height: "100%",
                                     userSelect: "none",
+                                    zIndex: 100,
                                 }}
                             >
                                 <Box
@@ -96,6 +85,22 @@ const CenterBtn = ({ NavList, NavBarOpen }) => {
                                     {value.SideDetail}
                                 </Box>
                             </Grid>
+                            <Box
+                                id={`Home_CenterBtn_${value.Type}_Background`}
+                                sx={{
+                                    overflow: "hidden",
+                                    width: $(
+                                        `#Home_CenterBtn_${value.Type}`
+                                    ).css("width"),
+                                    height: 150,
+                                    position: "absolute",
+                                    transitionDuration: "0.5s",
+                                    backgroundImage:
+                                        "linear-gradient(to right, rgb(214,164,135),rgb(255,255,255))",
+                                    opacity: 0.2,
+                                    zIndex: 99,
+                                }}
+                            />
                         </Grid>
                     );
                 }

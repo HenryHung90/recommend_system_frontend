@@ -2,16 +2,18 @@ import { useState, useEffect } from "react";
 
 import { Fade, Box, Container } from "@mui/material";
 
-import AlertLog from "../Compnents/Alert/AlertLog";
-import Loading from "../Compnents/Loading/Loading";
+import AlertLog from "../Components/AlertLog/AlertLog";
+import Loading from "../Components/Loading/Loading";
 
-import { Nav, NavList } from "../Compnents/Nav/Nav";
-import CenterBtn from "./Compnents/CenterBtn";
+import { Nav, NavList } from "../Components/Nav/Nav";
+import CenterBtn from "./Components/CenterBtn";
 
 const Home = ({ UserName }) => {
+    console.log(UserName);
     const [NavBarOpen, setNavBarOpen] = useState(false);
     const [ContainerFade, setContainerFade] = useState(true);
 
+    //AlertLog & Loading Setting------------------------------
     //AlertLog
     const [AlertOpen, setAlertLog] = useState(false);
     const [AlertTitle, setAlertTitle] = useState("");
@@ -23,13 +25,17 @@ const Home = ({ UserName }) => {
             setAlertMsg("");
         }, 500);
     };
+    const handelAlertLogSetting = (Title, Msg) => {
+        setAlertLog(true);
+        setAlertTitle(Title);
+        setAlertMsg(Msg);
+    };
     //Loading
     const [LoadingOpen, setLoading] = useState(false);
+    //---------------------------------------------------------
 
     useEffect(() => {
-        setAlertLog(true);
-        setAlertTitle("歡迎使用");
-        setAlertMsg("歡迎使用本系統!目前僅開放測驗系統!");
+        handelAlertLogSetting("歡迎使用", "歡迎使用本系統!目前僅開放測驗系統!");
     }, []);
 
     return (

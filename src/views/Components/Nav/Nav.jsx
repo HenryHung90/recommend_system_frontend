@@ -149,7 +149,7 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
 
     return (
         <Box
-            id="Home_NavBar"
+            id="NavBar"
             sx={{
                 position: "absolute",
                 height: "100% - 30px",
