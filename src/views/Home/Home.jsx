@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Fade, Box, Container } from "@mui/material";
 
@@ -9,9 +10,9 @@ import { Nav, NavList } from "../Components/Nav/Nav";
 import CenterBtn from "./Components/CenterBtn";
 
 const Home = ({ UserName }) => {
-    console.log(UserName);
     const [NavBarOpen, setNavBarOpen] = useState(false);
     const [ContainerFade, setContainerFade] = useState(true);
+    const navExamming = useNavigate();
 
     //AlertLog & Loading Setting------------------------------
     //AlertLog
@@ -34,7 +35,9 @@ const Home = ({ UserName }) => {
     const [LoadingOpen, setLoading] = useState(false);
     //---------------------------------------------------------
 
+    // 若還在考程中，則回到考試
     useEffect(() => {
+        if (localStorage.getItem("Testing")) return navExamming("/exam");
         handelAlertLogSetting("歡迎使用", "歡迎使用本系統!目前僅開放測驗系統!");
     }, []);
 
@@ -43,7 +46,7 @@ const Home = ({ UserName }) => {
             <Loading Loading={LoadingOpen} />
             <AlertLog
                 AlertLog={AlertOpen}
-                setAlertLog={() => handleAlertLogClose()}
+                setAlertLog={handleAlertLogClose}
                 AlertTitle={AlertTitle}
                 AlertMsg={AlertMsg}
             />

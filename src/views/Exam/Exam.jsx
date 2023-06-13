@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import $ from 'jquery'
 
 import { Box, Fade, Container } from "@mui/material";
 import { Main_Container } from "../../common/ContainerStyle";
@@ -36,6 +37,15 @@ const Exam = ({ UserName }) => {
         if (ExamStatus === "Examming") {
             handleStartExammingNav();
             localStorage.setItem("Testing", true);
+            $(document)
+                .on("keydown", e => {
+                    e.preventDefault();
+                })
+                .on("contextmenu", e => {
+                    return false;
+                });
+        } else {
+            $(document).off("keydown").off("contextmenu");
         }
     }, [ExamStatus]);
     //AlertLog & Loading Setting------------------------------
@@ -64,7 +74,7 @@ const Exam = ({ UserName }) => {
             <Loading Loading={LoadingOpen} />
             <AlertLog
                 AlertLog={AlertOpen}
-                setAlertLog={() => handleAlertLogClose()}
+                setAlertLog={handleAlertLogClose}
                 AlertTitle={AlertTitle}
                 AlertMsg={AlertMsg}
             />

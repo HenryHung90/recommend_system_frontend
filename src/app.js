@@ -18,6 +18,18 @@ const App = () => {
 
     const [UserName, setUserName] = useState("Test")
 
+    const AuthRouter = () => {
+        return (
+            <Routes>
+                <Route path='/home' element={<Home UserName={UserName} />} />
+                <Route path="/exam" element={<Exam UserName={UserName} />} />
+                <Route path='/' element={<Home UserName={UserName} />} />
+                <Route path='*' element={<Error />} />
+            </Routes>
+        )
+    }
+
+    // 確認是否登入
     useEffect(() => {
         if (localStorage.getItem('token')) {
             Connection.checkLogin(localStorage.getItem('token')).then(res => {
@@ -44,9 +56,10 @@ const App = () => {
                 }
             })
         }
-    })
+    }, [])
 
-    if (process.env.REACT_APP_TESTING_MODE) {
+
+    if (process.env.REACT_APP_TESTING_MODE === 'true') {
         console.log("Testing mode enabled")
         return (
             <Router>
@@ -62,12 +75,7 @@ const App = () => {
         if (Auth) {
             return (
                 <Router>
-                    <Routes>
-                        <Route path='/home' element={<Home UserName={UserName} />} />
-                        <Route path="/exam" element={<Exam UserName={UserName} />} />
-                        <Route path='/' element={<Home UserName={UserName} />} />
-                        <Route path='*' element={<Error />} />
-                    </Routes>
+                    <AuthRouter />
                 </Router>
             )
         } else {

@@ -91,7 +91,7 @@ const Login = ({ setUserName, setAuth }) => {
             <Loading Loading={LoadingOpen} />
             <AlertLog
                 AlertLog={AlertOpen}
-                setAlertLog={() => handleAlertLogClose()}
+                setAlertLog={handleAlertLogClose}
                 AlertTitle={AlertTitle}
                 AlertMsg={AlertMsg}
             />

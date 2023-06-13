@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import $ from "jquery";
 
@@ -12,12 +13,18 @@ import {
 
 const CenterBtn = ({ NavList, NavBarOpen }) => {
     const NavLocation = useNavigate();
+
+    const [loadingQueue, setloadingQueue] = useState(
+        new Array(NavList.length).fill(false)
+    );
+
     return (
         <Container id={"Home_Container"} sx={Main_Container(NavBarOpen)}>
             {NavList.map((value, index) => {
                 if (!value.NavOnly) {
                     return (
                         <Grid
+                            key={index}
                             id={`Home_CenterBtn_${value.Type}`}
                             onClick={e =>
                                 handleCenterBtnClick(e, NavBarOpen, NavLocation)
