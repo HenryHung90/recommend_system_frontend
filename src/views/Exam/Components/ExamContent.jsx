@@ -17,6 +17,22 @@ import {
 
 //題目樣式
 const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
+    // 檢查是否做過題目
+    useEffect(() => {
+        // 當前答案卷狀態
+        const paperAnswerSheet = JSON.parse(
+            localStorage.getItem("paperAnswerSheet")
+        );
+
+        if (paperAnswerSheet) {
+            paperAnswerSheet.map((question, index) => {
+                if (question.split(",")[0] !== "") {
+                    $(`#${questionUUID()[index]}`).css("opacity", "0.5");
+                }
+            });
+        }
+    });
+
     const optionGroupStyle = {
         padding: "10px 40px",
         fontSize: 6,
@@ -62,6 +78,12 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
             nowAnswer.includes(Value)
                 ? (nowAnswer = nowAnswer.filter(answer => answer !== Value))
                 : nowAnswer.push(Value);
+
+            if (nowAnswer.length === 0) {
+                $(`#${e.currentTarget.name}`).css("opacity", "1");
+            } else {
+                $(`#${e.currentTarget.name}`).css("opacity", "0.5");
+            }
             //進行升冪排序
             nowAnswer = nowAnswer.sort((a, b) => a - b);
         }
@@ -69,6 +91,7 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
         else if (Type === "radio") {
             //若為單選則直接選擇
             nowAnswer = [Value];
+            $(`#${e.currentTarget.name}`).css("opacity", "0.5");
         }
 
         //重回 string 並存回 answerSheet 中
@@ -98,6 +121,7 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
                 ];
                 return (
                     <Box
+                        id={value.uuid}
                         key={INDEX + 1}
                         sx={{
                             margin: "20px auto",
@@ -114,7 +138,7 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
                             }}
                         >
                             <Box>{INDEX + 1}、</Box>
-                            <Box>{`${value.question}\t(${QuestionsScore[INDEX]}分)`}</Box>
+                            <Box>{`${value.question}`}</Box>
                         </Box>
                         {value.category === 1 && (
                             <FormControl sx={optionGroupStyle}>
@@ -224,7 +248,7 @@ const ExamContent = ({
             Loading(true);
 
             setTimeout(() => {
-                submitPaperSheet()
+                submitPaperSheet();
             }, 3000);
         }
     }, [isTimeout]);
@@ -247,7 +271,7 @@ const ExamContent = ({
             answer_list,
             paper_type
         ).then(res => {
-            console.log(res)
+            console.log(res);
             if (res.data.state) {
                 AlertLog("通知", "交卷完成!");
                 Loading(false);

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import $ from 'jquery'
 
 import { Box, Fade, Container } from "@mui/material";
-import { Main_Container } from "../../common/ContainerStyle";
+import { Main_Container } from "../../common/MainStyle";
 import { handleStartExammingNav } from "../../common/examBtnClick";
 
 import { Nav } from "../Components/Nav/Nav";
@@ -80,14 +80,8 @@ const Exam = ({ UserName }) => {
             />
             <Fade in={true} timeout={1200}>
                 <Container
-                    sx={{
-                        width: "100vw",
-                        maxWidth: "none !important",
-                        display: "flex",
-                        height: "100vh",
-                        margin: "0 !important",
-                        padding: "0  !important",
-                    }}
+                    id={"Exam_Container"}
+                    sx={Main_Container.Main_Container()}
                 >
                     {localStorage.getItem("Testing") !== "true" && (
                         <>
@@ -97,23 +91,23 @@ const Exam = ({ UserName }) => {
                                 UserName={UserName}
                             />
                             <Box
-                                sx={{
-                                    position: "absolute",
-                                    width: "100vw",
-                                    height: "100vh",
-                                    overflow: "hidden",
-                                    backgroundColor: "rgba(0,0,0,0.5)",
-                                    opacity: NavBarOpen ? "1" : "0",
-                                    transitionDuration: "0.5s",
-                                    zIndex: NavBarOpen ? "999" : "-100",
-                                }}
+                                sx={Main_Container.Nav_Box(NavBarOpen)}
                                 onClick={() => setNavBarOpen(false)}
                             ></Box>
                         </>
                     )}
                     <Container
-                        id={"Exam_Container"}
-                        sx={Main_Container(NavBarOpen)}
+                        sx={{
+                            width: "80vw",
+                            maxWidth: "1600px !important",
+                            height: "100vh",
+                            padding: "15px",
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            margin: "0 auto",
+                            transitionDuration: "0.5s",
+                            opacity: NavBarOpen ? "0.3" : "1",
+                        }}
                     >
                         {ExamStatus === "Intro" && (
                             <Intro

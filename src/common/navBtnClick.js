@@ -2,18 +2,17 @@ import $ from 'jquery'
 
 // 處理Click Navbar部分的事件
 const handleTargetId = (Id, NavLocation) => {
+    $(`body`).fadeOut(500)
     switch (Id) {
         case "Avatar":
             break
         case "Home":
-            $(`body`).fadeOut(500)
             setTimeout(() => {
                 NavLocation("/home")
                 $('body').fadeIn(0)
             }, 500)
             break
         case "Exam":
-            $(`body`).fadeOut(500)
             setTimeout(() => {
                 NavLocation('/exam')
                 $('body').fadeIn(0)
@@ -22,6 +21,11 @@ const handleTargetId = (Id, NavLocation) => {
         case "Statistics":
             break
         case "History":
+            setTimeout(() => {
+                NavLocation('/history')
+                $('body').fadeIn(0)
+            }, 500)
+            break
             break
         case "Bookmarks":
             break

@@ -15,7 +15,7 @@ import {
 import { handleNavBtnClick } from "../../../common/navBtnClick";
 
 //Nav Bar 功能列表
-//Type 表是哪一個功能 : SideContent 功能內容 : Status 是否啟用
+//Type 表是哪一個功能 : SideContent 功能內容 : Status 是否啟用 : SideDetail 簡易描述 : SideImg 圖 : NavOnly 是否只在 Nav 顯示
 const NavList = [
     { Type: "Avatar", SideContent: "", Status: true, NavOnly: true },
     { Type: "Home", SideContent: "首頁", Status: true, NavOnly: true },
@@ -37,8 +37,8 @@ const NavList = [
     },
     {
         Type: "History",
-        SideContent: "作答紀錄",
-        Status: false,
+        SideContent: "歷史紀錄",
+        Status: true,
         SideDetail: "觀看您曾經做過的題目並能對其複習、溫故知新",
         SideImg: "url(../media/History.jpg)",
         NavOnly: false,
@@ -51,14 +51,14 @@ const NavList = [
         SideImg: "url(../media/Bookmarks.jpg)",
         NavOnly: false,
     },
-    {
-        Type: "Interactive",
-        SideContent: "互動",
-        Status: false,
-        SideDetail: "看看你的同學們作答的平均以及為其出題",
-        SideImg: "url(../media/Interactive.jpg)",
-        NavOnly: false,
-    },
+    // {
+    //     Type: "Interactive",
+    //     SideContent: "互動",
+    //     Status: false,
+    //     SideDetail: "看看你的同學們作答的平均以及為其出題",
+    //     SideImg: "url(../media/Interactive.jpg)",
+    //     NavOnly: false,
+    // },
 ];
 
 const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
@@ -154,8 +154,7 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                 position: "absolute",
                 height: "100% - 30px",
                 transitionDuration: "0.5s",
-                width: NavBarOpen ? "15vw" : "2.5vw",
-                maxWidth: "300px",
+                width: NavBarOpen ? "300px" : "50px",
                 backgroundColor: "rgb(64,54,47)",
                 opacity: NavBarOpen ? "1" : "0.7",
                 "&:hover": {
@@ -178,7 +177,9 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
                     <Box
                         id={`Home_NavBtn_${value.Type}`}
                         onClick={e =>
-                            handleNavBtnClick(e, NavBarOpen, NavLocation)
+                            value.Status
+                                ? handleNavBtnClick(e, NavBarOpen, NavLocation)
+                                : null
                         }
                         key={index}
                         sx={{

@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import $ from "jquery";
 
 import { Container, Box, Grid } from "@mui/material";
-import { Main_Container } from "../../../common/ContainerStyle";
+import { Main_Container } from "../../../common/MainStyle";
 
 import {
     handleCenterBtnClick,
@@ -14,12 +13,20 @@ import {
 const CenterBtn = ({ NavList, NavBarOpen }) => {
     const NavLocation = useNavigate();
 
-    const [loadingQueue, setloadingQueue] = useState(
-        new Array(NavList.length).fill(false)
-    );
-
     return (
-        <Container id={"Home_Container"} sx={Main_Container(NavBarOpen)}>
+        <Container
+            sx={{
+                width: "80vw",
+                maxWidth: "1600px !important",
+                height: "100vh",
+                padding: "15px",
+                overflowY: "auto",
+                overflowX: "hidden",
+                margin: "0 auto",
+                transitionDuration: "0.5s",
+                opacity: NavBarOpen ? "0.3" : "1",
+            }}
+        >
             {NavList.map((value, index) => {
                 if (!value.NavOnly) {
                     return (

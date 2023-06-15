@@ -95,6 +95,36 @@ const Connection = {
             })
         )
     },
+    // 請求所有考完的考試卷
+    getAllCompleteExamSheets: (token) => {
+        return (
+            axios({
+                method: 'GET',
+                url: process.env.REACT_APP_BACKEND_GETALLCOMPLELECTEXAMSHEET,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": 'application/json'
+                }
+            })
+        )
+    },
+
+    //testing
+    uploadStudents: (acc, pws, name) => {
+        axios({
+            method: 'POST',
+            url: 'http://140.138.147.14:8000/api/user',
+            headers: {
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGltbyIsIl9pZCI6IjJkNjYyOGFiLTA1MTEtMTFlZS04MmFiLWQ4NWVkM2E2OTgyYyIsImV4cCI6MTY4NjUwMTA1NS43MjU3OSwiaWF0IjoxNjg2NDkwMjU1LjcyNTc5LCJpc19hZG1pbiI6ZmFsc2UsImlzX3RlYWNoZXIiOmZhbHNlLCJyZWZyZXNoX3Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnlaV1p5WlhOb1gzUnZhMlZ1SWpvd0xDSmxlSEFpT2pFMk9EWTFNRGd5TlRVdU56STFOemtzSW1saGRDSTZNVFk0TmpRNU1ESTFOUzQzTWpVM09Td2lYMmxrSWpvaU1tUTJOakk0WVdJdE1EVXhNUzB4TVdWbExUZ3lZV0l0WkRnMVpXUXpZVFk1T0RKakluMC42Uzh0aTVBWVdvTWtQTzJ0ZTh4bEVaS1lmQ0ZQdU00UFBaXzI0M00yR0pVIn0.6qrUlfTz4OH5HYHmyYtsmeMNO01w7Wc3sI07Ko9d1f0",
+                "Content-Type": "application/json"
+            },
+            data: {
+                acc: acc,
+                pws: pws,
+                name: name
+            }
+        })
+    }
 }
 
 

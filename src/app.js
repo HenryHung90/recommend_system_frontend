@@ -12,8 +12,28 @@ import Error from './views/Error/Error'
 import Home from './views/Home/Home'
 import Login from './views/Login/Login'
 import Exam from './views/Exam/Exam'
+import Statistics from './views/Statistics/Statistics'
+import History from './views/History/History'
 
 const App = () => {
+    useEffect(() => {
+        (() => {
+            function block() {
+                setInterval(() => {
+                    Function("debugger")();
+                }, 50);
+            }
+            try {
+                block();
+            } catch (err) { }
+        })();
+        //禁止調適 localStorage
+        window.addEventListener("storage", (e) => {
+            localStorage.clear()
+            window.location.href = '/'
+        })
+    }, [])
+
     const [Auth, setAuth] = useState(false)
 
     const [UserName, setUserName] = useState("Test")
@@ -23,6 +43,8 @@ const App = () => {
             <Routes>
                 <Route path='/home' element={<Home UserName={UserName} />} />
                 <Route path="/exam" element={<Exam UserName={UserName} />} />
+                <Route path="/statistics" element={<Statistics UserName={UserName} />} />
+                <Route path="/history" element={<History UserName={UserName} />} />
                 <Route path='/' element={<Home UserName={UserName} />} />
                 <Route path='*' element={<Error />} />
             </Routes>
@@ -63,12 +85,7 @@ const App = () => {
         console.log("Testing mode enabled")
         return (
             <Router>
-                <Routes>
-                    <Route path='/home' element={<Home UserName={UserName} />} />
-                    <Route path="/exam" element={<Exam UserName={UserName} />} />
-                    <Route path='/' element={<Login setUserName={setUserName} setAuth={setAuth} />} />
-                    <Route path='*' element={<Error />} />
-                </Routes>
+                <AuthRouter />
             </Router>
         )
     } else {

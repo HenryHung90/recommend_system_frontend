@@ -4,7 +4,7 @@ import { Connection } from "../../../common/axiosConnect";
 
 const Intro = ({ setExamStatus, AlertLog, Loading, setQuestionQuery }) => {
     const IntroList = [
-        "1️⃣、 在考試期間，請避免上網查詢資料，本考試具有錯題分析系統，若無如實應考，會造成分析具有偏差。",
+        "1️⃣、 在考試期間，請避免上網查詢資料，會造成偏差。",
         "2️⃣、 考試時請避免同時登入並開啟超過一該網站。",
         "3️⃣、 請務必在考試時間內做完並送出。",
         "4️⃣、 請務必盡你所能回答題目，加油！",
@@ -61,6 +61,7 @@ const Intro = ({ setExamStatus, AlertLog, Loading, setQuestionQuery }) => {
                     fontSize: "60px",
                     fontWeight: "bolder",
                     textAlign: "center",
+                    userSelect: "none",
                 }}
             >
                 <Box
