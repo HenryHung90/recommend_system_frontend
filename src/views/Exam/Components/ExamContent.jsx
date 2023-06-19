@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import $ from "jquery";
 
 import { Connection } from "../../../common/axiosConnect";
+import { isLocalStorageSetOpen } from "../../../common/examBtnClick";
 
 import {
     Box,
@@ -17,6 +18,7 @@ import {
 
 //題目樣式
 const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
+    const SET_LOCALSTORAGE = localStorage.setItem;
     // 檢查是否做過題目
     useEffect(() => {
         // 當前答案卷狀態
@@ -31,6 +33,8 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
                 }
             });
         }
+        // 取消LOCALSTORAGE效果
+        isLocalStorageSetOpen(false, SET_LOCALSTORAGE);
     });
 
     const optionGroupStyle = {
@@ -54,6 +58,8 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
     };
 
     const handleSelectingOptions = e => {
+        // 回復功能
+        isLocalStorageSetOpen(true, SET_LOCALSTORAGE);
         // Type => 複選(checkbox)or單選(radio), Name => 題目之uuid, Value => 選擇之 value 值
         const Type = e.currentTarget.type;
         const Name = e.currentTarget.name;
@@ -101,6 +107,8 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
             JSON.stringify(paperAnswerSheet)
         );
         setPaperAnswerSheet(paperAnswerSheet);
+
+        isLocalStorageSetOpen(false, SET_LOCALSTORAGE);
     };
 
     return (

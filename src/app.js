@@ -16,23 +16,23 @@ import Statistics from './views/Statistics/Statistics'
 import History from './views/History/History'
 
 const App = () => {
-    useEffect(() => {
-        (() => {
-            function block() {
-                setInterval(() => {
-                    Function("debugger")();
-                }, 50);
-            }
-            try {
-                block();
-            } catch (err) { }
-        })();
-        //禁止調適 localStorage
-        window.addEventListener("storage", (e) => {
-            localStorage.clear()
-            window.location.href = '/'
-        })
-    }, [])
+    // useEffect(() => {
+    //     (() => {
+    //         function block() {
+    //             setInterval(() => {
+    //                 Function("debugger")();
+    //             }, 50);
+    //         }
+    //         try {
+    //             block();
+    //         } catch (err) { }
+    //     })();
+    //     //禁止調適 localStorage
+    //     window.addEventListener("storage", (e) => {
+    //         localStorage.clear()
+    //         window.location.href = '/'
+    //     })
+    // }, [])
 
     const [Auth, setAuth] = useState(false)
 

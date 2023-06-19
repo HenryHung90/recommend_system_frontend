@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { Fade, Container, Box } from "@mui/material";
 
@@ -8,12 +9,29 @@ import { Nav } from "../Components/Nav/Nav";
 import Loading from "../Components/Loading/Loading";
 import AlertLog from "../Components/AlertLog/AlertLog";
 
-import HistoryList from './Components/HistoryList'
+import HistoryList from "./Components/HistoryList";
+import HistoryPaper from "./Components/HistoryPaper";
+import HistoryRetest from "./Components/HistoryRetest";
 
 const History = ({ UserName }) => {
     const [NavBarOpen, setNavBarOpen] = useState(false);
 
     const [HistoryPage, setHistoryPage] = useState("List");
+    // 設定使用哪一張 paper (uuid)
+    const [HistoryPaperUUID, setHistoryPaperUUID] = useState("");
+    const [getParam, setParam] = useSearchParams();
+
+    useEffect(() => {
+        const Page = getParam.get("page");
+        const PaperId = getParam.get("uuid");
+
+        if (Page === "Paper" || Page === "Retest") {
+            setHistoryPage(Page);
+        }
+        if (PaperId) {
+            setHistoryPaperUUID(PaperId);
+        }
+    }, []);
     //AlertLog & Loading Setting------------------------------
     //AlertLog
     const [AlertOpen, setAlertLog] = useState(false);
@@ -66,7 +84,31 @@ const History = ({ UserName }) => {
                         }}
                     >
                         {HistoryPage === "List" && (
-                            <HistoryList AlertLog={handelAlertLogSetting} />
+                            <HistoryList
+                                AlertLog={handelAlertLogSetting}
+                                setHistoryPage={setHistoryPage}
+                                setHistoryPaperUUID={setHistoryPaperUUID}
+                            />
+                        )}
+                        {HistoryPage === "Paper" && (
+                            <HistoryPaper
+                                setLoading={setLoading}
+                                setHistoryPage={setHistoryPage}
+                                HistoryPaperUUID={HistoryPaperUUID}
+                                setHistoryPaperUUID={setHistoryPaperUUID}
+                                getParam={getParam}
+                                setParam={setParam}
+                            />
+                        )}
+                        {HistoryPage === "Retest" && (
+                            <HistoryRetest
+                                setLoading={setLoading}
+                                setHistoryPage={setHistoryPage}
+                                HistoryPaperUUID={HistoryPaperUUID}
+                                setHistoryPaperUUID={setHistoryPaperUUID}
+                                getParam={getParam}
+                                setParam={setParam}
+                            />
                         )}
                     </Container>
                 </Container>

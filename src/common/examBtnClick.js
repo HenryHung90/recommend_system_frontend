@@ -18,4 +18,13 @@ const handleStartExammingNav = () => {
     // }, 2000)
 }
 
-export { handleStartExammingNav }
+const isLocalStorageSetOpen = (Status, Original) => {
+    Status
+        ? localStorage.setItem = Original
+        : localStorage.setItem = () => {
+            window.alert("禁止調適 Localstorage 資料")
+            console.log("Plz do not modifiy the localStorage");
+        }
+}
+
+export { handleStartExammingNav, isLocalStorageSetOpen }

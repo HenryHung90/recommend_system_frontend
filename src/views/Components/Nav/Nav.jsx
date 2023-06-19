@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import $ from "jquery";
 
 import { Box, Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
@@ -77,6 +79,11 @@ const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
         width: 58,
         height: 30,
     };
+
+    useEffect(() => {
+        if (NavBarOpen) $("body").css("overflow", "hidden");
+        else $("body").css("overflow", "auto");
+    }, [NavBarOpen]);
 
     //處理NavBar的開關
     const handleNavBarOpen = () => {

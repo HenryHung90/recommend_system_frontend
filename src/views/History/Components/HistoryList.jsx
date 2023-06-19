@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Connection } from "../../../common/axiosConnect";
 
@@ -12,12 +13,34 @@ import {
     Typography,
 } from "@mui/material";
 
-const ExamSheetCard = ({ examDetail, AlertLog }) => {
-    const handleWatchExamSheet = () => {
-        AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+// 考試卡片顯示
+const ExamSheetCard = ({
+    examDetail,
+    AlertLog,
+    setHistoryPage,
+    setHistoryPaperUUID,
+}) => {
+    const [getParams, setParam] = useSearchParams();
+
+    // 查看測驗
+    const handleWatchExamSheet = paperId => {
+        // AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+        setHistoryPage("Paper");
+        setHistoryPaperUUID(paperId);
+        setParam({
+            page: "Paper",
+            uuid: paperId,
+        });
     };
-    const handleRetestExamSheet = () => {
-        AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+    // 重新測驗
+    const handleRetestExamSheet = paperId => {
+        // AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+        setHistoryPage("Retest");
+        setHistoryPaperUUID(paperId);
+        setParam({
+            page: "Retest",
+            uuid: paperId,
+        });
     };
 
     return (
@@ -39,10 +62,16 @@ const ExamSheetCard = ({ examDetail, AlertLog }) => {
                 <Typography variant="body2">{examDetail.paper_id}</Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={handleWatchExamSheet}>
+                <Button
+                    size="small"
+                    onClick={() => handleWatchExamSheet(examDetail.paper_id)}
+                >
                     觀看作答
                 </Button>
-                <Button size="small" onClick={handleRetestExamSheet}>
+                <Button
+                    size="small"
+                    onClick={() => handleRetestExamSheet(examDetail.paper_id)}
+                >
                     重複測驗
                 </Button>
             </CardActions>
@@ -50,9 +79,9 @@ const ExamSheetCard = ({ examDetail, AlertLog }) => {
     );
 };
 
-const HistoryList = ({ AlertLog }) => {
+const HistoryList = ({ AlertLog, setHistoryPage, setHistoryPaperUUID }) => {
+    // 取得所有考試歷史並儲存
     const [ExamHistory, setExamHistory] = useState([]);
-
     useEffect(() => {
         Connection.getAllCompleteExamSheets(localStorage.getItem("token")).then(
             res => {
@@ -89,8 +118,11 @@ const HistoryList = ({ AlertLog }) => {
                 {ExamHistory.map((examDetail, index) => {
                     return (
                         <ExamSheetCard
+                            key={index}
                             examDetail={examDetail}
                             AlertLog={AlertLog}
+                            setHistoryPage={setHistoryPage}
+                            setHistoryPaperUUID={setHistoryPaperUUID}
                         />
                     );
                 })}
