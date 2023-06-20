@@ -1,6 +1,6 @@
 import { Container, Box, Button } from "@mui/material";
 
-import { Connection } from "../../../common/axiosConnect";
+import { handleStartExam } from "../../../common/examHandleEvent";
 
 const Intro = ({ setExamStatus, AlertLog, Loading, setQuestionQuery }) => {
     const IntroList = [
@@ -9,39 +9,6 @@ const Intro = ({ setExamStatus, AlertLog, Loading, setQuestionQuery }) => {
         "3️⃣、 請務必在考試時間內做完並送出。",
         "4️⃣、 請務必盡你所能回答題目，加油！",
     ];
-
-    const handleStartExam = () => {
-        AlertLog("通知", "即將開始測驗！請勿重整或重複開啟該網站！");
-        Loading(true);
-
-        Connection.checkExamStatus(localStorage.getItem("token")).then(res => {
-            if (res.data.state) {
-                Connection.requestExamSheet(
-                    localStorage.getItem("token"),
-                    "First"
-                ).then(res => {
-                    if (!res.data.state) {
-                        AlertLog("通知", res.data.msg);
-                        Loading(false);
-                        return;
-                    }
-                    // 設定 QuestionQuery
-                    setQuestionQuery(res.data.result);
-                    localStorage.setItem(
-                        "questionQuery",
-                        JSON.stringify(res.data.result)
-                    );
-                    Loading(false);
-                    setExamStatus("Examming");
-                });
-            }
-        });
-        //Testing
-        // setTimeout(() => {
-        //     Loading(false);
-        //     setExamStatus("Examming");
-        // }, 3000);
-    };
 
     return (
         <Container
@@ -107,7 +74,14 @@ const Intro = ({ setExamStatus, AlertLog, Loading, setQuestionQuery }) => {
                 <Button
                     variant="contained"
                     size="large"
-                    onClick={handleStartExam}
+                    onClick={() =>
+                        handleStartExam(
+                            AlertLog,
+                            Loading,
+                            setQuestionQuery,
+                            setExamStatus
+                        )
+                    }
                 >
                     準備好了，開始測驗
                 </Button>

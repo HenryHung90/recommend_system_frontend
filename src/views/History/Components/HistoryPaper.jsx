@@ -5,15 +5,16 @@ import { Connection } from "../../../common/axiosConnect";
 import {
     Box,
     Container,
-    Radio,
     Button,
-    FormControl,
     FormControlLabel,
-    RadioGroup,
     FormGroup,
     Checkbox,
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { History_Container } from "../../../common/MainStyle";
+
+import SingleSelection from "../../Components/ExamQuestion/SingleSelection";
+import MultiSelection from "../../Components/ExamQuestion/MultiSelection";
 
 const HistoryPaper = ({
     setLoading,
@@ -25,12 +26,6 @@ const HistoryPaper = ({
 }) => {
     const [PaperDetail, setPaperDetail] = useState({});
     const [PaperLoaded, setPaperLoaded] = useState(false);
-
-    const optionGroupStyle = {
-        padding: "10px 40px",
-        fontSize: 6,
-        margin: "10px auto",
-    };
 
     const handleReturnHistoryList = () => {
         setHistoryPage("List");
@@ -66,20 +61,19 @@ const HistoryPaper = ({
     }, []);
 
     return (
-        <Container
-            sx={{
-                margin: "10px auto",
-                padding: "10px 35px",
-                width: "95%",
-                height: "95%",
-                overflowY: "scroll",
-            }}
-        >
+        <Container sx={History_Container.Main_Container}>
             {PaperLoaded && (
                 <Button
                     variant="contained"
                     endIcon={<ArrowBackIosIcon />}
                     onClick={handleReturnHistoryList}
+                    sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: "1000",
+                        width: 150,
+                        height: 50,
+                    }}
                 >
                     返回
                 </Button>
@@ -148,110 +142,28 @@ const HistoryPaper = ({
                                 <Box>{`${value.question}`}</Box>
                             </Box>
                             {value.category === 1 && (
-                                <FormControl sx={optionGroupStyle}>
-                                    <RadioGroup
-                                        aria-labelledby="demo-radio-buttons-group-label"
-                                        name={value.uuid}
-                                    >
-                                        {options.map((option, index) => {
-                                            if (option !== null) {
-                                                return (
-                                                    <FormControlLabel
-                                                        key={index + 1}
-                                                        value={index + 1}
-                                                        control={
-                                                            <Radio
-                                                                size="medium"
-                                                                disabled
-                                                            />
-                                                        }
-                                                        label={option}
-                                                        checked={studentAnswer.includes(
-                                                            (
-                                                                index + 1
-                                                            ).toString()
-                                                        )}
-                                                        sx={{
-                                                            backgroundColor:
-                                                                rightAnswer.includes(
-                                                                    (
-                                                                        index +
-                                                                        1
-                                                                    ).toString()
-                                                                )
-                                                                    ? checkAnswer(
-                                                                          studentAnswer,
-                                                                          rightAnswer
-                                                                      )
-                                                                        ? "rgba(100,255,100,0.5)"
-                                                                        : "rgba(255,100,100,0.5)"
-                                                                    : "none",
-                                                            borderRadius: 2,
-                                                        }}
-                                                    />
-                                                );
-                                            }
-                                        })}
-                                    </RadioGroup>
-                                </FormControl>
+                                <SingleSelection
+                                    Type={"Review"}
+                                    uuid={value.uuid}
+                                    options={options}
+                                    studentAnswer={studentAnswer}
+                                    rightAnswer={rightAnswer}
+                                    checkAnswer={checkAnswer}
+                                />
                             )}
                             {value.category === 2 && (
-                                <FormGroup
-                                    sx={optionGroupStyle}
-                                    name={value.uuid}
-                                >
-                                    {options.map((option, index) => {
-                                        if (option === null) {
-                                            return;
-                                        }
-                                        return (
-                                            <FormControlLabel
-                                                key={index + 1}
-                                                value={index + 1}
-                                                control={
-                                                    <Checkbox
-                                                        disabled
-                                                        size="medium"
-                                                    />
-                                                }
-                                                label={option}
-                                                name={value.uuid}
-                                                checked={studentAnswer.includes(
-                                                    (index + 1).toString()
-                                                )}
-                                                sx={{
-                                                    backgroundColor:
-                                                        rightAnswer.includes(
-                                                            (
-                                                                index + 1
-                                                            ).toString()
-                                                        )
-                                                            ? checkAnswer(
-                                                                  studentAnswer,
-                                                                  rightAnswer
-                                                              )
-                                                                ? "rgba(100,255,100,0.5)"
-                                                                : "rgba(255,100,100,0.5)"
-                                                            : "none",
-                                                    borderRadius: 2,
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                </FormGroup>
+                                <MultiSelection
+                                    Type={"Review"}
+                                    uuid={value.uuid}
+                                    options={options}
+                                    studentAnswer={studentAnswer}
+                                    rightAnswer={rightAnswer}
+                                    checkAnswer={checkAnswer}
+                                />
                             )}
                         </Box>
                     );
                 })}
-            {PaperLoaded && (
-                <Button
-                    variant="contained"
-                    endIcon={<ArrowBackIosIcon />}
-                    onClick={handleReturnHistoryList}
-                >
-                    返回
-                </Button>
-            )}
         </Container>
     );
 };

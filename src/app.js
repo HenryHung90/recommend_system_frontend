@@ -28,6 +28,7 @@ const App = () => {
     //         } catch (err) { }
     //     })();
     //     //禁止調適 localStorage
+    //     //一旦主動更改 localStorage 即立即清空所有localStorage
     //     window.addEventListener("storage", (e) => {
     //         localStorage.clear()
     //         window.location.href = '/'

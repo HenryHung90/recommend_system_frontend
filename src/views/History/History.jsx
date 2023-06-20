@@ -16,6 +16,7 @@ import HistoryRetest from "./Components/HistoryRetest";
 const History = ({ UserName }) => {
     const [NavBarOpen, setNavBarOpen] = useState(false);
 
+    // List => 歷史紀錄清單 // Paper => 觀看考試狀況 // Retest => 重複考試
     const [HistoryPage, setHistoryPage] = useState("List");
     // 設定使用哪一張 paper (uuid)
     const [HistoryPaperUUID, setHistoryPaperUUID] = useState("");

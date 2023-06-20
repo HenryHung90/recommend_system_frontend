@@ -15,6 +15,10 @@ import {
     Checkbox,
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { History_Container } from "../../../common/MainStyle";
+
+import SingleSelection from "../../Components/ExamQuestion/SingleSelection";
+import MultiSelection from "../../Components/ExamQuestion/MultiSelection";
 
 const HistoryRetest = ({
     setLoading,
@@ -99,19 +103,19 @@ const HistoryRetest = ({
 
         return true;
     };
+    //送出題目
     const handleSubmitPaper = () => {
         PaperDetail.question_list.map((value, index) => {
-            console.log(paperAnswerSheet[index], value.answer);
             if (checkAnswer(paperAnswerSheet[index], value.answer)) {
-                $(`#${value.question_id}`).css(
-                    "boxShadow",
-                    "1px 1px 7px 2px rgba(0,200,0,0.7)"
-                );
+                $(`#${value.question_id}`).css({
+                    boxShadow: "1px 1px 7px 2px rgba(0,200,0,0.7)",
+                    opacity: "1",
+                });
             } else {
-                $(`#${value.question_id}`).css(
-                    "boxShadow",
-                    "1px 1px 7px 2px rgba(200,0,0,0.7)"
-                );
+                $(`#${value.question_id}`).css({
+                    boxShadow: "1px 1px 7px 2px rgba(200,0,0,0.7)",
+                    opacity: "1",
+                });
             }
         });
     };
@@ -132,27 +136,20 @@ const HistoryRetest = ({
         });
     }, []);
 
-    const optionGroupStyle = {
-        padding: "10px 40px",
-        fontSize: 6,
-        margin: "10px auto",
-    };
-
     return (
-        <Container
-            sx={{
-                margin: "10px auto",
-                padding: "10px 35px",
-                width: "95%",
-                height: "95%",
-                overflowY: "scroll",
-            }}
-        >
+        <Container sx={History_Container.Main_Container}>
             {PaperLoaded && (
                 <Button
                     variant="contained"
                     endIcon={<ArrowBackIosIcon />}
                     onClick={handleReturnHistoryList}
+                    sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: "1000",
+                        width: 150,
+                        height: 50,
+                    }}
                 >
                     返回
                 </Button>
@@ -188,49 +185,24 @@ const HistoryRetest = ({
                                 <Box>{`${value.question}`}</Box>
                             </Box>
                             {value.category === 1 && (
-                                <FormControl sx={optionGroupStyle}>
-                                    <RadioGroup
-                                        aria-labelledby="demo-radio-buttons-group-label"
-                                        name={value.question_id}
-                                        onChange={handleSelectingOptions}
-                                    >
-                                        {options.map((option, index) => {
-                                            if (option !== null) {
-                                                return (
-                                                    <FormControlLabel
-                                                        key={index + 1}
-                                                        value={index + 1}
-                                                        control={
-                                                            <Radio size="small" />
-                                                        }
-                                                        label={option}
-                                                    />
-                                                );
-                                            }
-                                        })}
-                                    </RadioGroup>
-                                </FormControl>
+                                <SingleSelection
+                                    Type={"Retest"}
+                                    uuid={value.question_id}
+                                    options={options}
+                                    handleSelectingOptions={
+                                        handleSelectingOptions
+                                    }
+                                />
                             )}
                             {value.category === 2 && (
-                                <FormGroup
-                                    sx={optionGroupStyle}
-                                    name={value.question_id}
-                                >
-                                    {options.map((option, index) => {
-                                        return (
-                                            <FormControlLabel
-                                                key={index + 1}
-                                                value={index + 1}
-                                                control={<Checkbox />}
-                                                label={option}
-                                                name={value.question_id}
-                                                onChange={
-                                                    handleSelectingOptions
-                                                }
-                                            />
-                                        );
-                                    })}
-                                </FormGroup>
+                                <MultiSelection
+                                    Type={"Retest"}
+                                    uuid={value.question_id}
+                                    options={options}
+                                    handleSelectingOptions={
+                                        handleSelectingOptions
+                                    }
+                                />
                             )}
                         </Box>
                     );

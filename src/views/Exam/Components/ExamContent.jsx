@@ -1,23 +1,19 @@
 import { useState, useEffect } from "react";
 import $ from "jquery";
 
-import { Connection } from "../../../common/axiosConnect";
-import { isLocalStorageSetOpen } from "../../../common/examBtnClick";
-
 import {
-    Box,
-    Container,
-    Radio,
-    FormControl,
-    FormControlLabel,
-    RadioGroup,
-    FormGroup,
-    Checkbox,
-    Button,
-} from "@mui/material";
+    isLocalStorageSetOpen,
+    submitPaperSheet,
+    handleSubmitPaper,
+} from "../../../common/examHandleEvent";
+
+import SingleSelection from "../../Components/ExamQuestion/SingleSelection";
+import MultiSelection from "../../Components/ExamQuestion/MultiSelection";
+
+import { Box, Container, Button } from "@mui/material";
 
 //題目樣式
-const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
+const ExamQuestionComponent = ({ Questions }) => {
     const SET_LOCALSTORAGE = localStorage.setItem;
     // 檢查是否做過題目
     useEffect(() => {
@@ -33,15 +29,11 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
                 }
             });
         }
-        // 取消LOCALSTORAGE效果
-        isLocalStorageSetOpen(false, SET_LOCALSTORAGE);
+        // 取消LOCALSTORAGE setItem 功能
+        setTimeout(() => {
+            isLocalStorageSetOpen(false, SET_LOCALSTORAGE);
+        }, 1000);
     });
-
-    const optionGroupStyle = {
-        padding: "10px 40px",
-        fontSize: 6,
-        margin: "10px auto",
-    };
 
     const [paperAnswerSheet, setPaperAnswerSheet] = useState(
         JSON.parse(localStorage.getItem("paperAnswerSheet"))
@@ -60,7 +52,6 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
     const handleSelectingOptions = e => {
         // 回復功能
         isLocalStorageSetOpen(true, SET_LOCALSTORAGE);
-        // Type => 複選(checkbox)or單選(radio), Name => 題目之uuid, Value => 選擇之 value 值
         const Type = e.currentTarget.type;
         const Name = e.currentTarget.name;
         const Value = e.currentTarget.value;
@@ -108,7 +99,9 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
         );
         setPaperAnswerSheet(paperAnswerSheet);
 
-        isLocalStorageSetOpen(false, SET_LOCALSTORAGE);
+        setTimeout(() => {
+            isLocalStorageSetOpen(false, SET_LOCALSTORAGE);
+        }, 1);
     };
 
     return (
@@ -149,57 +142,22 @@ const ExamQuestionComponent = ({ Questions, QuestionsScore }) => {
                             <Box>{`${value.question}`}</Box>
                         </Box>
                         {value.category === 1 && (
-                            <FormControl sx={optionGroupStyle}>
-                                <RadioGroup
-                                    aria-labelledby="demo-radio-buttons-group-label"
-                                    name={value.uuid}
-                                    onChange={handleSelectingOptions}
-                                >
-                                    {options.map((option, index) => {
-                                        if (option !== null) {
-                                            return (
-                                                <FormControlLabel
-                                                    key={index + 1}
-                                                    value={index + 1}
-                                                    control={
-                                                        <Radio size="small" />
-                                                    }
-                                                    label={option}
-                                                    checked={
-                                                        parseInt(
-                                                            paperAnswerSheet[
-                                                                INDEX
-                                                            ]
-                                                        ) ===
-                                                        index + 1
-                                                    }
-                                                />
-                                            );
-                                        }
-                                    })}
-                                </RadioGroup>
-                            </FormControl>
+                            <SingleSelection
+                                Type={"Exam"}
+                                uuid={value.uuid}
+                                handleSelectingOptions={handleSelectingOptions}
+                                options={options}
+                                paperAnswerSheet={paperAnswerSheet[INDEX]}
+                            />
                         )}
                         {value.category === 2 && (
-                            <FormGroup sx={optionGroupStyle} name={value.uuid}>
-                                {options.map((option, index) => {
-                                    return (
-                                        <FormControlLabel
-                                            key={index + 1}
-                                            value={index + 1}
-                                            control={<Checkbox />}
-                                            label={option}
-                                            name={value.uuid}
-                                            onChange={handleSelectingOptions}
-                                            checked={paperAnswerSheet[
-                                                INDEX
-                                            ].split(",").includes(
-                                                (index + 1).toString()
-                                            )}
-                                        />
-                                    );
-                                })}
-                            </FormGroup>
+                            <MultiSelection
+                                Type={"Exam"}
+                                uuid={value.uuid}
+                                handleSelectingOptions={handleSelectingOptions}
+                                options={options}
+                                paperAnswerSheet={paperAnswerSheet[INDEX]}
+                            />
                         )}
                     </Box>
                 );
@@ -256,55 +214,10 @@ const ExamContent = ({
             Loading(true);
 
             setTimeout(() => {
-                submitPaperSheet();
+                submitPaperSheet(AlertLog, Loading, setExamStatus);
             }, 3000);
         }
     }, [isTimeout]);
-
-    // 送出答案卷
-    const submitPaperSheet = () => {
-        const paper_id = JSON.parse(
-            localStorage.getItem("questionQuery")
-        ).paper_id;
-        const answer_list = JSON.parse(
-            localStorage.getItem("paperAnswerSheet")
-        );
-        const paper_type = JSON.parse(
-            localStorage.getItem("questionQuery")
-        ).paper_type;
-
-        Connection.submitExamSheet(
-            localStorage.getItem("token"),
-            paper_id,
-            answer_list,
-            paper_type
-        ).then(res => {
-            console.log(res);
-            if (res.data.state) {
-                AlertLog("通知", "交卷完成!");
-                Loading(false);
-                localStorage.removeItem("questionQuery");
-                localStorage.removeItem("paperAnswerSheet");
-                localStorage.removeItem("Testing");
-                setExamStatus("Intro");
-            }
-        });
-    };
-
-    const handleSubmitPaper = () => {
-        const paperAnswerSheet = JSON.parse(
-            localStorage.getItem("paperAnswerSheet")
-        );
-        const isComplete = paperAnswerSheet.includes("");
-
-        if (isComplete) {
-            AlertLog("通知", "尚有題目未完成!");
-            return;
-        }
-        if (window.confirm("確認答案無誤，要交卷了嗎?")) {
-            submitPaperSheet();
-        }
-    };
 
     return (
         <Container
@@ -361,7 +274,6 @@ const ExamContent = ({
             >
                 <ExamQuestionComponent
                     Questions={QuestionQuery.question_list}
-                    QuestionsScore={QuestionQuery.question_score_list}
                 />
             </Container>
             <Button
@@ -371,7 +283,9 @@ const ExamContent = ({
                     width: 350,
                 }}
                 size="large"
-                onClick={handleSubmitPaper}
+                onClick={() =>
+                    handleSubmitPaper(AlertLog, Loading, setExamStatus)
+                }
             >
                 寫完了，交卷!
             </Button>
