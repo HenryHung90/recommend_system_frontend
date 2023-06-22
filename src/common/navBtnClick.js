@@ -5,6 +5,9 @@ const handleTargetId = (Id, NavLocation) => {
     $(`body`).fadeOut(500)
     switch (Id) {
         case "Avatar":
+            setTimeout(() => {
+                $('body').fadeIn(0)
+            }, 500)
             break
         case "Home":
             setTimeout(() => {

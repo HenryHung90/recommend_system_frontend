@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import $ from 'jquery'
+import $ from "jquery";
 
 import { Box, Fade, Container } from "@mui/material";
 import { Main_Container } from "../../common/MainStyle";
-import { handleStartExammingNav } from "../../common/examBtnClick";
 
 import { Nav } from "../Components/Nav/Nav";
 import Loading from "../Components/Loading/Loading";
@@ -14,7 +13,6 @@ import ExamContent from "./Components/ExamContent";
 
 const Exam = ({ UserName }) => {
     const [NavBarOpen, setNavBarOpen] = useState(false);
-
     //localStorage規則 (皆須在考完試後全部清除)
     // 1. Testing: 表示現在正在進行考試，尚未結束，結束後須清除該標記
     // 2. paperAnswerSheet: 該張考卷的答案陣列
@@ -31,12 +29,14 @@ const Exam = ({ UserName }) => {
         }
     }, []);
 
-    //設定狀態 Intro => 未考試 Examming => 考試
+    //設定狀態 Intro => 未考試 // Examming => 考試
     const [ExamStatus, setExamStatus] = useState("Intro");
     useEffect(() => {
         if (ExamStatus === "Examming") {
-            handleStartExammingNav();
+            $("#NavBar").animate({ left: -150 });
             localStorage.setItem("Testing", true);
+            
+            // 禁止右鍵以及任何輸入
             $(document)
                 .on("keydown", e => {
                     e.preventDefault();
@@ -45,6 +45,7 @@ const Exam = ({ UserName }) => {
                     return false;
                 });
         } else {
+            // 結束後關閉
             $(document).off("keydown").off("contextmenu");
         }
     }, [ExamStatus]);

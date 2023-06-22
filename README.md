@@ -68,3 +68,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+# Deployment Log
+
+## 0.1.0 - Standard Init
+
+contents: 
+* basic Authentication System
+* basic view page Includes
+    1. Home
+    2. Login
+    3. Exam
+    4. History
+    5. Components ( Nav , Loading , ExamQuestions{Single/Multiple} , AlertLog)

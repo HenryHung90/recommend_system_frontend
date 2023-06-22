@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Connection } from "../../../common/axiosConnect";
 
@@ -12,12 +13,34 @@ import {
     Typography,
 } from "@mui/material";
 
-const ExamSheetCard = ({ examDetail, AlertLog }) => {
-    const handleWatchExamSheet = () => {
-        AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+// 考試卡片顯示
+const ExamSheetCard = ({
+    examDetail,
+    AlertLog,
+    setHistoryPage,
+    setHistoryPaperUUID,
+}) => {
+    const [getParams, setParam] = useSearchParams();
+
+    // 查看測驗
+    const handleWatchExamSheet = paperIndex => {
+        // AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+        setHistoryPage("Paper");
+        setHistoryPaperUUID(paperIndex);
+        setParam({
+            page: "Paper",
+            paperIndex: paperIndex,
+        });
     };
-    const handleRetestExamSheet = () => {
-        AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+    // 重新測驗
+    const handleRetestExamSheet = paperIndex => {
+        // AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
+        setHistoryPage("Retest");
+        setHistoryPaperUUID(paperIndex);
+        setParam({
+            page: "Retest",
+            paperIndex: paperIndex,
+        });
     };
 
     return (
@@ -27,22 +50,42 @@ const ExamSheetCard = ({ examDetail, AlertLog }) => {
                     sx={{ fontSize: 14 }}
                     color="text.secondary"
                     gutterBottom
+                    textAlign={"center"}
                 >
                     {`測驗時間:${examDetail.answered_on}`}
                 </Typography>
-                <Typography variant="h5" component="div">
+                <Typography variant="h4" component="div" textAlign={"center"}>
                     {examDetail.paper_type}
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography
+                    sx={{ mb: 1.5 }}
+                    color="text.secondary"
+                    textAlign={"center"}
+                >
                     {`分數:${examDetail.score}/${examDetail.total_score}`}
                 </Typography>
-                <Typography variant="body2">{examDetail.paper_id}</Typography>
+                <Typography variant="body2" textAlign={"center"}>
+                    {"做得好!xvideo"}
+                </Typography>
             </CardContent>
-            <CardActions>
-                <Button size="small" onClick={handleWatchExamSheet}>
+            <CardActions
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                }}
+            >
+                <Button
+                    size="small"
+                    onClick={() => handleWatchExamSheet(examDetail.paper_index)}
+                >
                     觀看作答
                 </Button>
-                <Button size="small" onClick={handleRetestExamSheet}>
+                <Button
+                    size="small"
+                    onClick={() =>
+                        handleRetestExamSheet(examDetail.paper_index)
+                    }
+                >
                     重複測驗
                 </Button>
             </CardActions>
@@ -50,9 +93,9 @@ const ExamSheetCard = ({ examDetail, AlertLog }) => {
     );
 };
 
-const HistoryList = ({ AlertLog }) => {
+const HistoryList = ({ AlertLog, setHistoryPage, setHistoryPaperUUID }) => {
+    // 取得所有考試歷史並儲存
     const [ExamHistory, setExamHistory] = useState([]);
-
     useEffect(() => {
         Connection.getAllCompleteExamSheets(localStorage.getItem("token")).then(
             res => {
@@ -89,8 +132,11 @@ const HistoryList = ({ AlertLog }) => {
                 {ExamHistory.map((examDetail, index) => {
                     return (
                         <ExamSheetCard
+                            key={index}
                             examDetail={examDetail}
                             AlertLog={AlertLog}
+                            setHistoryPage={setHistoryPage}
+                            setHistoryPaperUUID={setHistoryPaperUUID}
                         />
                     );
                 })}
