@@ -1,4 +1,5 @@
 import axios from "axios"
+import { param } from "jquery"
 
 const Connection = {
     //登入
@@ -59,9 +60,13 @@ const Connection = {
         return (
             axios({
                 method: 'POST',
-                url: type === 'First' ? process.env.REACT_APP_BACKEND_FIRSTEXAM : process.env.REACT_APP_BACKEND_CONTENTBASEEXAM,
+                url: process.env.REACT_APP_BACKEND_EXAM,
                 headers: {
                     Authorization: 'Bearer ' + token,
+                },
+                //Data => type[string] first_test || content_based_test
+                data: {
+                    paper_type: type
                 }
             })
         )
@@ -83,14 +88,17 @@ const Connection = {
         )
     },
     // 請求完成的考試卷
-    getCompleteExamSheet: (token, type) => {
+    getCompleteExamSheet: (token, paperIndex) => {
         return (
             axios({
                 method: 'GET',
-                url: type === 'First' ? process.env.REACT_APP_BACKEND_FIRSTEXAM : process.env.REACT_APP_BACKEND_CONTENTBASEEXAM,
+                url: process.env.REACT_APP_BACKEND_EXAM,
                 headers: {
                     Authorization: 'Bearer ' + token,
                     "Content-Type": 'application/json',
+                },
+                params: {
+                    paper_index: paperIndex,
                 }
             })
         )
@@ -109,6 +117,19 @@ const Connection = {
         )
     },
 
+    // 教師端
+    getDashboardTeacher: (token) => {
+        return (
+            axios({
+                method: "GET",
+                url: process.env.REACT_APP_BACKEND_MAIN_TEACHER,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": 'application/json'
+                }
+            })
+        )
+    },
     //testing
     uploadStudents: (acc, pws, name) => {
         axios({

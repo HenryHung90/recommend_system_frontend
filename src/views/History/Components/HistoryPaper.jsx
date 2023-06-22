@@ -52,9 +52,9 @@ const HistoryPaper = ({
         setLoading(true);
         Connection.getCompleteExamSheet(
             localStorage.getItem("token"),
-            "First"
+            getParam.get("paperIndex")
         ).then(res => {
-            setPaperDetail(res.data.result);
+            setPaperDetail(res.data.result[0]);
             setPaperLoaded(true);
             setLoading(false);
         });

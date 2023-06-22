@@ -23,23 +23,23 @@ const ExamSheetCard = ({
     const [getParams, setParam] = useSearchParams();
 
     // 查看測驗
-    const handleWatchExamSheet = paperId => {
+    const handleWatchExamSheet = paperIndex => {
         // AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
         setHistoryPage("Paper");
-        setHistoryPaperUUID(paperId);
+        setHistoryPaperUUID(paperIndex);
         setParam({
             page: "Paper",
-            uuid: paperId,
+            paperIndex: paperIndex,
         });
     };
     // 重新測驗
-    const handleRetestExamSheet = paperId => {
+    const handleRetestExamSheet = paperIndex => {
         // AlertLog("通知", "目前僅提供成績查詢!十分抱歉!");
         setHistoryPage("Retest");
-        setHistoryPaperUUID(paperId);
+        setHistoryPaperUUID(paperIndex);
         setParam({
             page: "Retest",
-            uuid: paperId,
+            paperIndex: paperIndex,
         });
     };
 
@@ -50,27 +50,41 @@ const ExamSheetCard = ({
                     sx={{ fontSize: 14 }}
                     color="text.secondary"
                     gutterBottom
+                    textAlign={"center"}
                 >
                     {`測驗時間:${examDetail.answered_on}`}
                 </Typography>
-                <Typography variant="h5" component="div">
+                <Typography variant="h4" component="div" textAlign={"center"}>
                     {examDetail.paper_type}
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography
+                    sx={{ mb: 1.5 }}
+                    color="text.secondary"
+                    textAlign={"center"}
+                >
                     {`分數:${examDetail.score}/${examDetail.total_score}`}
                 </Typography>
-                <Typography variant="body2">{examDetail.paper_id}</Typography>
+                <Typography variant="body2" textAlign={"center"}>
+                    {"做得好!xvideo"}
+                </Typography>
             </CardContent>
-            <CardActions>
+            <CardActions
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                }}
+            >
                 <Button
                     size="small"
-                    onClick={() => handleWatchExamSheet(examDetail.paper_id)}
+                    onClick={() => handleWatchExamSheet(examDetail.paper_index)}
                 >
                     觀看作答
                 </Button>
                 <Button
                     size="small"
-                    onClick={() => handleRetestExamSheet(examDetail.paper_id)}
+                    onClick={() =>
+                        handleRetestExamSheet(examDetail.paper_index)
+                    }
                 >
                     重複測驗
                 </Button>

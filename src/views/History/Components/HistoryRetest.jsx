@@ -125,11 +125,11 @@ const HistoryRetest = ({
         setLoading(true);
         Connection.getCompleteExamSheet(
             localStorage.getItem("token"),
-            "First"
+            getParam.get("paperIndex")
         ).then(res => {
-            setPaperDetail(res.data.result);
+            setPaperDetail(res.data.result[0]);
             setPaperAnswerSheet(
-                new Array(res.data.result.question_list.length).fill("")
+                new Array(res.data.result[0].question_list.length).fill("")
             );
             setPaperLoaded(true);
             setLoading(false);

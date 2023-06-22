@@ -19,7 +19,7 @@ import Loading from "../Components/Loading/Loading";
 
 import { Connection } from "../../common/axiosConnect";
 
-const Login = ({ setUserName, setAuth }) => {
+const Login = ({ setUserName, setAuth, setAdmin, setTeacher }) => {
     useEffect(() => {
         $("#acc").on("keydown", e => {
             if (e.keyCode === 13) login();
@@ -70,6 +70,8 @@ const Login = ({ setUserName, setAuth }) => {
             if (res.data.state) {
                 const tokenDetail = Connection.decode(res.data.result.token);
 
+                console.log(tokenDetail);
+
                 localStorage.setItem("token", res.data.result.token);
                 localStorage.setItem(
                     "refresh_token",
@@ -78,6 +80,8 @@ const Login = ({ setUserName, setAuth }) => {
 
                 setUserName(tokenDetail.name);
                 setAuth(true);
+                setAdmin(tokenDetail.is_admin);
+                setTeacher(tokenDetail.is_teacher);
                 NavLocation("/home");
             } else {
                 handelAlertLogSetting("通知", res.data.msg);
