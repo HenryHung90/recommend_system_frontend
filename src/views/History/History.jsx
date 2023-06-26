@@ -79,7 +79,7 @@ const History = ({ UserName }) => {
                     ></Box>
                     <Container
                         sx={{
-                            width: "100%",
+                            width: "80%",
                             maxWidth: "1500px !important",
                             height: "100%",
                         }}

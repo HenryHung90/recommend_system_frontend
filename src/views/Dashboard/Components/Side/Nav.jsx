@@ -18,7 +18,6 @@ import GroupIcon from "@mui/icons-material/Group";
 // 側邊導覽列生成
 const NavList = ({ setPage }) => {
     const handleClick = (e, Type) => {
-        e.stopPropagation();
         setPage(Type);
     };
 

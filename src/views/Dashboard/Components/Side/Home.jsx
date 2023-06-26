@@ -1,6 +1,6 @@
 import { Container, Box } from "@mui/material";
 
-const Home = ({ UserName }) => {
+const Home = ({ UserName, setLoading }) => {
     return (
         <Container>
             <Box
@@ -11,7 +11,7 @@ const Home = ({ UserName }) => {
             >
                 {UserName || "Unknown User"}，您好！
             </Box>
-            
+
         </Container>
     );
 };

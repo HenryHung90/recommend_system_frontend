@@ -8,7 +8,7 @@ import Quizzes from "./Side/Quizzes";
 import Papers from "./Side/Papers";
 import Students from "./Side/Students";
 
-const MainDashboard = ({ UserName, paperQuestionQuery }) => {
+const MainDashboard = ({ UserName, setLoading, handelAlertLogSetting }) => {
     const [NavBar, setNavBarOpen] = useState(false);
     const [page, setPage] = useState("Home");
 
@@ -29,9 +29,9 @@ const MainDashboard = ({ UserName, paperQuestionQuery }) => {
             />
             {/* Main_Container */}
             <Container sx={{ padding: "25px 0" }}>
-                {page === "Home" && <Home UserName={UserName} />}
+                {page === "Home" && <Home UserName={UserName} setLoading={setLoading} />}
                 {page === "Quizzes" && (
-                    <Quizzes paperQuestionQuery={paperQuestionQuery} />
+                    <Quizzes setLoading={setLoading} />
                 )}
                 {page === "Papers" && <Papers />}
                 {page === "Students" && <Students />}
