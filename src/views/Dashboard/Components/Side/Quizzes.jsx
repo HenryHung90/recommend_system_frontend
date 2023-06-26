@@ -14,6 +14,7 @@ const PaperQuestionSettingDialog = ({ open, close }) => {
 
 const AddQuestionDialog = ({ open, close }) => {
 
+    //題目敘述
     const [questionDescription, setQuestionDescription] = useState("")
 
     //類型（單選多選）
