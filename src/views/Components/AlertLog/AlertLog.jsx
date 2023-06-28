@@ -14,6 +14,9 @@ const AlertLog = ({ AlertLog, AlertTitle, AlertMsg, setAlertLog }) => {
             onClose={setAlertLog}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            sx={{
+                zIndex: "9999",
+            }}
         >
             <DialogTitle id="alert-dialog-title">
                 {AlertTitle || "通知"}
@@ -27,7 +30,7 @@ const AlertLog = ({ AlertLog, AlertTitle, AlertMsg, setAlertLog }) => {
                 <Button onClick={setAlertLog}>好</Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 }
 
 export default AlertLog

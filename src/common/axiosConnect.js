@@ -1,5 +1,4 @@
 import axios from "axios"
-import { param } from "jquery"
 
 const Connection = {
     //登入
@@ -118,11 +117,17 @@ const Connection = {
     },
 
     // 教師端
-    getDashboardTeacher: (token) => {
+    // get_type => question_db 所有題目 // app_paper_type 全部卷次 // all_student 全部分數加總&學生列表 // student_status 學生答題情形
+    // paper_index => 卷次(適用於 all_student)
+    // student_id => 單個學生(適用於 student_status)
+    getQuestionDB: (token) => {
         return (
             axios({
                 method: "GET",
                 url: process.env.REACT_APP_BACKEND_MAIN_TEACHER,
+                params: {
+                    get_type: 'question_db'
+                },
                 headers: {
                     Authorization: 'Bearer ' + token,
                     "Content-Type": 'application/json'
@@ -130,6 +135,36 @@ const Connection = {
             })
         )
     },
+    // 輸入題目
+    submitNewQuestion: (token, questionData) => {
+        return (
+            axios({
+                method: 'post',
+                url: process.env.REACT_APP_BACKEND_QUESTION,
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "multipart/form-data"
+                },
+                data: questionData,
+            })
+        )
+    },
+    // 修改題目
+    editQuestion: (token, questionData) => {
+        return (
+            axios({
+                method: 'PUT',
+                url: process.env.REACT_APP_BACKEND_QUESTION,
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "multipart/form-data"
+                },
+                data: questionData,
+            })
+        )
+    },
+    // 刪除題目
+
     //testing
     uploadStudents: (acc, pws, name) => {
         axios({

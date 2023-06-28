@@ -10,39 +10,14 @@ import {
     Divider,
 } from "@mui/material";
 
-import HomeIcon from "@mui/icons-material/Home";
+
 import MenuIcon from "@mui/icons-material/Menu";
-import QuizIcon from "@mui/icons-material/Quiz";
-import FindInPageIcon from "@mui/icons-material/FindInPage";
-import GroupIcon from "@mui/icons-material/Group";
+;
 // 側邊導覽列生成
-const NavList = ({ setPage }) => {
+const NavList = ({ setPage, ListDetail }) => {
     const handleClick = (e, Type) => {
         setPage(Type);
     };
-
-    const ListDetail = [
-        {
-            Title: "主畫面",
-            Icon: <HomeIcon />,
-            Page: "Home",
-        },
-        {
-            Title: "題庫總覽",
-            Icon: <QuizIcon />,
-            Page: "Quizzes",
-        },
-        {
-            Title: "卷次查詢",
-            Icon: <FindInPageIcon />,
-            Page: "Papers",
-        },
-        {
-            Title: "學生管理",
-            Icon: <GroupIcon />,
-            Page: "Students",
-        },
-    ];
 
     return (
         <Box sx={{ width: 250, paddingTop: 5 }} role="presentation">
@@ -63,7 +38,7 @@ const NavList = ({ setPage }) => {
     );
 };
 
-const Nav = ({ NavBar, setNavBarOpen, setPage }) => {
+const Nav = ({ NavBar, setNavBarOpen, setPage, ListDetail }) => {
     const handleOpenNavBar = () => {
         setNavBarOpen(open => !open);
     };
@@ -90,21 +65,10 @@ const Nav = ({ NavBar, setNavBarOpen, setPage }) => {
                 onClick={() => setNavBarOpen(false)}
             >
                 <NavList
-                    setNavBarOpen={() => setNavBarOpen(false)}
                     setPage={setPage}
+                    ListDetail={ListDetail}
                 />
             </Drawer>
-            <Box
-                sx={{
-                    color: "white",
-                    fontFamily: "Roboto Condensed",
-                    fontSize: 30,
-                    width: "80%",
-                    textAlign: "center",
-                }}
-            >
-                Teacher Center
-            </Box>
         </Box>
     );
 };
