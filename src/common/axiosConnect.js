@@ -135,6 +135,23 @@ const Connection = {
             })
         )
     },
+    // 取得type
+    getQuestionType: (token, major_type_id, type_id) => {
+        return (
+            axios({
+                method: "GET",
+                url: process.env.REACT_APP_BACKEND_GET_QUESTION_TYPE,
+                params: {
+                    major_type_id: major_type_id || "",
+                    type_id: type_id || "",
+                },
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                }
+            })
+        )
+    },
     // 輸入題目
     submitNewQuestion: (token, questionData) => {
         return (
@@ -164,7 +181,19 @@ const Connection = {
         )
     },
     // 刪除題目
-
+    deleteQuestion: (token, questionData) => {
+        return (
+            axios({
+                method: "Delete",
+                url: process.env.REACT_APP_BACKEND_QUESTION,
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                data: questionData
+            })
+        )
+    },
     //testing
     uploadStudents: (acc, pws, name) => {
         axios({
