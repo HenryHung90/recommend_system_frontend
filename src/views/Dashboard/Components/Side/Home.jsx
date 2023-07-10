@@ -1,6 +1,11 @@
 import { Container, Box, Button } from "@mui/material";
 
-const Home = ({ UserName, setPage, setLoading, ListDetail }) => {
+const Home = ({ UserName, setPage, setParam, setLoading, ListDetail }) => {
+    const handleHomeNavListButtonClick = (e, page) => {
+        setPage(page);
+        setParam({ page: page });
+    };
+
     return (
         <Container>
             <Box
@@ -23,11 +28,14 @@ const Home = ({ UserName, setPage, setLoading, ListDetail }) => {
                     if (list.Page !== "Home") {
                         return (
                             <Button
+                                key={index}
                                 variant="contained"
                                 size="large"
                                 sx={{ width: "10vw", minWidth: 150 }}
                                 startIcon={list.Icon}
-                                onClick={() => setPage(list.Page)}
+                                onClick={e =>
+                                    handleHomeNavListButtonClick(e, list.Page)
+                                }
                             >
                                 {list.Title}
                             </Button>

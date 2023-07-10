@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { Container } from "@mui/material";
 
@@ -13,10 +14,15 @@ import Quizzes from "./Side/Quizzes";
 import Papers from "./Side/Papers";
 import Students from "./Side/Students";
 
-
 const MainDashboard = ({ UserName, setLoading, handelAlertLogSetting }) => {
     const [NavBar, setNavBarOpen] = useState(false);
     const [page, setPage] = useState("Home");
+    const [getParam, setParam] = useSearchParams();
+
+    useEffect(() => {
+        const Page = getParam.get("page");
+        if (Page !== null) setPage(Page);
+    }, []);
 
     // 頁面
     const ListDetail = [
@@ -56,6 +62,7 @@ const MainDashboard = ({ UserName, setLoading, handelAlertLogSetting }) => {
                 NavBar={NavBar}
                 setNavBarOpen={setNavBarOpen}
                 setPage={setPage}
+                setParam={setParam}
                 ListDetail={ListDetail}
             />
             {/* Main_Container */}
@@ -64,13 +71,14 @@ const MainDashboard = ({ UserName, setLoading, handelAlertLogSetting }) => {
                     <Home
                         UserName={UserName}
                         setPage={setPage}
+                        setParam={setParam}
                         setLoading={setLoading}
                         ListDetail={ListDetail}
                     />
                 )}
                 {page === "Quizzes" && <Quizzes setLoading={setLoading} />}
-                {page === "Papers" && <Papers />}
-                {page === "Students" && <Students />}
+                {page === "Papers" && <Papers setLoading={setLoading} />}
+                {page === "Students" && <Students setLoading={setLoading} />}
             </Container>
         </Container>
     );

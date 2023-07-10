@@ -10,13 +10,12 @@ import {
     Divider,
 } from "@mui/material";
 
-
 import MenuIcon from "@mui/icons-material/Menu";
-;
 // 側邊導覽列生成
-const NavList = ({ setPage, ListDetail }) => {
+const NavList = ({ setPage, ListDetail, setParam }) => {
     const handleClick = (e, Type) => {
         setPage(Type);
+        setParam({ page: Type });
     };
 
     return (
@@ -38,7 +37,7 @@ const NavList = ({ setPage, ListDetail }) => {
     );
 };
 
-const Nav = ({ NavBar, setNavBarOpen, setPage, ListDetail }) => {
+const Nav = ({ NavBar, setNavBarOpen, setPage, setParam, ListDetail }) => {
     const handleOpenNavBar = () => {
         setNavBarOpen(open => !open);
     };
@@ -67,6 +66,7 @@ const Nav = ({ NavBar, setNavBarOpen, setPage, ListDetail }) => {
                 <NavList
                     setPage={setPage}
                     ListDetail={ListDetail}
+                    setParam={setParam}
                 />
             </Drawer>
         </Box>

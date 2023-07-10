@@ -40,42 +40,34 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
     //question_type 小屬性
     const [questionAttributeType, setQuestionAttributeType] = useState({
         major_question_type: [],
-        question_type: []
-    })
-    //把 type Id 轉換為 Name
-    const typeId2Name = typeId => {
-        if (typeId === "")
-            return ""
-
-        for (const { type_id } of questionAttributeType.question_type) {
-            if (typeId === type_id)
-                return `${type.type1} ${type.type2 === null ? '' : " => " + type.type2} ${type.type3 === null ? '' : " => " + type.type3} ${type.type4 === null ? '' : " => " + type.type4}`
-        }
-    }
+        question_type: [],
+    });
     const mainType2Name = mainType => {
-        for (const { type, type_name } of questionAttributeType.major_question_type) {
-            if (mainType === type)
-                return type_name
-
+        for (const {
+            type,
+            type_name,
+        } of questionAttributeType.major_question_type) {
+            if (mainType === type) return type_name;
         }
-    }
+    };
     //找出該type 的 maintype (options => 1 找 Id , 2 找 Name)
     const findMainType = (typeId, options) => {
         for (const { type_id, type1 } of questionAttributeType.question_type) {
             if (typeId === type_id) {
-                for (const { type, type_name } of questionAttributeType.major_question_type) {
+                for (const {
+                    type,
+                    type_name,
+                } of questionAttributeType.major_question_type) {
                     if (type1 === type_name) {
-                        if (options === 1)
-                            return type
-                        if (options === 2)
-                            return type_name
+                        if (options === 1) return type;
+                        if (options === 2) return type_name;
                     }
                 }
             }
         }
-    }
+    };
 
-    const [questionMainAttribute, setQuestionMainAttribute] = useState("")
+    const [questionMainAttribute, setQuestionMainAttribute] = useState("");
     //屬性 (html css javascript)
     const [questionAttribute, setQuestionAttribute] = useState("");
     const handleChangequestionAttribute = e => {
@@ -108,28 +100,31 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
     const [option_4, setOption_4] = useState("");
     const [option_5, setOption_5] = useState("");
 
-
     //取得所有屬性
     useEffect(() => {
         Connection.getQuestionType(localStorage.getItem("token")).then(res => {
-            setQuestionAttributeType(res.data.result[0])
-            console.log(res.data.result[0])
-        })
-    }, [])
+            setQuestionAttributeType(res.data.result[0]);
+            console.log(res.data.result[0]);
+        });
+    }, []);
 
     useEffect(() => {
         if (type === "paper") {
             setQuestionDescription(questionDetail.question);
             setQuestionType(questionDetail.category === "單選" ? "1" : "2");
-            setQuestionMainAttribute(findMainType(questionDetail.type_id, 1))
+            setQuestionMainAttribute(findMainType(questionDetail.type_id, 1));
             setQuestionAttribute(questionDetail.type_id);
-            setQuestionDifficulty(questionDetail.difficulty)
+            setQuestionDifficulty(questionDetail.difficulty);
             setCorrectOption(questionDetail.answer);
             setOption_1(questionDetail.options1);
             setOption_2(questionDetail.options2);
             setOption_3(questionDetail.options3);
-            setOption_4(questionDetail.options5 === -1 ? "" : questionDetail.options5);
-            setOption_5(questionDetail.options5 === -1 ? "" : questionDetail.options5);
+            setOption_4(
+                questionDetail.options4 === -1 ? "" : questionDetail.options4
+            );
+            setOption_5(
+                questionDetail.options5 === -1 ? "" : questionDetail.options5
+            );
         } else {
             setQuestionDescription("");
             setQuestionType("");
@@ -164,9 +159,9 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
         questionData.append("answer", correctOption);
         questionData.append("type_id", questionAttribute);
         if (type === "paper") {
-            questionData.append("uid", questionDetail.uuid)
-            questionData.append("question_type_id", questionMainAttribute)
-        };
+            questionData.append("uid", questionDetail.uuid);
+            questionData.append("question_type_id", questionMainAttribute);
+        }
         questionData.append("difficulty", questionDifficulty);
         questionData.append("category", questionType);
 
@@ -206,13 +201,15 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
     //刪除問題
     const handleDeleteQuestion = () => {
         if (window.confirm("確定刪除該題目?")) {
-
             const questionData = new FormData();
-            questionData.append("uid", questionDetail.uuid)
-            questionData.append("question_type_id", questionMainAttribute)
+            questionData.append("uid", questionDetail.uuid);
+            questionData.append("question_type_id", questionMainAttribute);
 
             setLoading(true);
-            Connection.deleteQuestion(localStorage.getItem("token"), questionData).then(res => {
+            Connection.deleteQuestion(
+                localStorage.getItem("token"),
+                questionData
+            ).then(res => {
                 if (res.data.state) {
                     window.alert("success");
                     setLoading(false);
@@ -220,7 +217,7 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                 } else {
                     window.alert(res.data.msg);
                 }
-            })
+            });
         }
     };
 
@@ -250,10 +247,15 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                 </FormControl>
                 <Box
                     sx={{
-                        display: 'flex',
+                        display: "flex",
                     }}
                 >
-                    <FormControl variant="standard" fullWidth margin="normal" sx={{ padding: '0 5px' }}>
+                    <FormControl
+                        variant="standard"
+                        fullWidth
+                        margin="normal"
+                        sx={{ padding: "0 5px" }}
+                    >
                         <InputLabel>題目類型</InputLabel>
                         <Select
                             labelId="demo-simple-select-standard-label"
@@ -265,7 +267,12 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                             <MenuItem value={"2"}>多選</MenuItem>
                         </Select>
                     </FormControl>
-                    <FormControl variant="standard" fullWidth margin="normal" sx={{ padding: '0 5px' }}>
+                    <FormControl
+                        variant="standard"
+                        fullWidth
+                        margin="normal"
+                        sx={{ padding: "0 5px" }}
+                    >
                         <InputLabel>題目屬性</InputLabel>
                         <Select
                             labelId="demo-simple-select-standard-label"
@@ -273,25 +280,63 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                             onChange={handleChangequestionAttribute}
                             label="題目類型"
                         >
-                            {
-                                type === 'new' && questionAttributeType.question_type.map(type => {
-                                    return (
-                                        <MenuItem value={type.type_id}>{`${type.type1} ${type.type2 === null ? '' : " => " + type.type2} ${type.type3 === null ? '' : " => " + type.type3} ${type.type4 === null ? '' : " => " + type.type4}`}</MenuItem>
-                                    )
-                                })
-                            }
-                            {
-                                type === 'paper' && questionAttributeType.question_type.map(type => {
-                                    if (type.type1 === mainType2Name(questionMainAttribute)) {
+                            {type === "new" &&
+                                questionAttributeType.question_type.map(
+                                    type => {
                                         return (
-                                            <MenuItem value={type.type_id}>{`${type.type1} ${type.type2 === null ? '' : " => " + type.type2} ${type.type3 === null ? '' : " => " + type.type3} ${type.type4 === null ? '' : " => " + type.type4}`}</MenuItem>
-                                        )
+                                            <MenuItem value={type.type_id}>{`${
+                                                type.type1
+                                            } ${
+                                                type.type2 === null
+                                                    ? ""
+                                                    : " => " + type.type2
+                                            } ${
+                                                type.type3 === null
+                                                    ? ""
+                                                    : " => " + type.type3
+                                            } ${
+                                                type.type4 === null
+                                                    ? ""
+                                                    : " => " + type.type4
+                                            }`}</MenuItem>
+                                        );
                                     }
-                                })
-                            }
+                                )}
+                            {type === "paper" &&
+                                questionAttributeType.question_type.map(
+                                    type => {
+                                        if (
+                                            type.type1 ===
+                                            mainType2Name(questionMainAttribute)
+                                        ) {
+                                            return (
+                                                <MenuItem
+                                                    value={type.type_id}
+                                                >{`${type.type1} ${
+                                                    type.type2 === null
+                                                        ? ""
+                                                        : " => " + type.type2
+                                                } ${
+                                                    type.type3 === null
+                                                        ? ""
+                                                        : " => " + type.type3
+                                                } ${
+                                                    type.type4 === null
+                                                        ? ""
+                                                        : " => " + type.type4
+                                                }`}</MenuItem>
+                                            );
+                                        }
+                                    }
+                                )}
                         </Select>
                     </FormControl>
-                    <FormControl variant="standard" fullWidth margin="normal" sx={{ padding: '0 5px' }}>
+                    <FormControl
+                        variant="standard"
+                        fullWidth
+                        margin="normal"
+                        sx={{ padding: "0 5px" }}
+                    >
                         <InputLabel>題目難易度</InputLabel>
                         <Select
                             labelId="demo-simple-select-standard-label"
@@ -306,11 +351,31 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                 </Box>
                 <DialogTitle textAlign={"center"}>選擇輸入</DialogTitle>
                 {[
-                    { value: option_1, set: setOption_1, count: questionDetail.options1_count },
-                    { value: option_2, set: setOption_2, count: questionDetail.options2_count },
-                    { value: option_3, set: setOption_3, count: questionDetail.options3_count },
-                    { value: option_4, set: setOption_4, count: questionDetail.options4_count },
-                    { value: option_5, set: setOption_5, count: questionDetail.options5_count },
+                    {
+                        value: option_1,
+                        set: setOption_1,
+                        count: questionDetail.options1_count,
+                    },
+                    {
+                        value: option_2,
+                        set: setOption_2,
+                        count: questionDetail.options2_count,
+                    },
+                    {
+                        value: option_3,
+                        set: setOption_3,
+                        count: questionDetail.options3_count,
+                    },
+                    {
+                        value: option_4,
+                        set: setOption_4,
+                        count: questionDetail.options4_count,
+                    },
+                    {
+                        value: option_5,
+                        set: setOption_5,
+                        count: questionDetail.options5_count,
+                    },
                 ].map((option, index) => {
                     return (
                         <Box sx={{ display: "flex" }}>
@@ -341,12 +406,11 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                                 <FormHelperText id="my-helper-text">
                                     不填視作無此選項
                                 </FormHelperText>
-                                {
-                                    type === 'paper' &&
+                                {type === "paper" && (
                                     <FormHelperText id="my-helper-text">
                                         {`選擇次數:${option.count}`}
                                     </FormHelperText>
-                                }
+                                )}
                             </FormControl>
                         </Box>
                     );
@@ -405,7 +469,10 @@ const Quizzes = ({ setLoading }) => {
     useEffect(() => {
         setLoading(true);
         // 取得總題數
-        Connection.getQuestionDB(localStorage.getItem("token")).then(res => {
+        Connection.getQuestionDB(
+            localStorage.getItem("token"),
+            "question_db"
+        ).then(res => {
             if (res.data.state) {
                 res.data.result.forEach((value, index) => {
                     value.id = index + 1;
@@ -415,11 +482,10 @@ const Quizzes = ({ setLoading }) => {
                         value.correct_nums
                     );
                 });
-                console.log(res.data.result)
                 setpaperQuestionQuery(res.data.result);
                 setLoading(false);
             } else {
-                window.alert(res.data.result);
+                window.alert(res.data.msg);
             }
             //answer_num 總回答數
             //correct_num 正確回答數

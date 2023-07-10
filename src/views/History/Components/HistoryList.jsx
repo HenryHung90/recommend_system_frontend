@@ -65,7 +65,7 @@ const ExamSheetCard = ({
                     {`分數:${examDetail.score}/${examDetail.total_score}`}
                 </Typography>
                 <Typography variant="body2" textAlign={"center"}>
-                    {"做得好!xvideo"}
+                    {"testing"}
                 </Typography>
             </CardContent>
             <CardActions
@@ -93,13 +93,24 @@ const ExamSheetCard = ({
     );
 };
 
-const HistoryList = ({ AlertLog, setHistoryPage, setHistoryPaperUUID }) => {
+const HistoryList = ({
+    setLoading,
+    AlertLog,
+    setHistoryPage,
+    setHistoryPaperUUID,
+}) => {
     // 取得所有考試歷史並儲存
     const [ExamHistory, setExamHistory] = useState([]);
     useEffect(() => {
+        setLoading(true);
         Connection.getAllCompleteExamSheets(localStorage.getItem("token")).then(
             res => {
-                setExamHistory(res.data.result);
+                if (res.data.status) {
+                    setExamHistory(res.data.result);
+                    setLoading(false);
+                } else {
+                    window.alert(res.data.msg);
+                }
             }
         );
     }, []);

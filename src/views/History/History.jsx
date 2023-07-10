@@ -86,6 +86,7 @@ const History = ({ UserName }) => {
                     >
                         {HistoryPage === "List" && (
                             <HistoryList
+                                setLoading={setLoading}
                                 AlertLog={handelAlertLogSetting}
                                 setHistoryPage={setHistoryPage}
                                 setHistoryPaperUUID={setHistoryPaperUUID}

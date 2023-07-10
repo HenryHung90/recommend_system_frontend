@@ -117,16 +117,18 @@ const Connection = {
     },
 
     // 教師端
-    // get_type => question_db 所有題目 // app_paper_type 全部卷次 // all_student 全部分數加總&學生列表 // student_status 學生答題情形
+    // get_type => question_db 所有題目 // all_paper_type 全部卷次 // all_student 全部分數加總&學生列表 // student_status 學生答題情形
     // paper_index => 卷次(適用於 all_student)
     // student_id => 單個學生(適用於 student_status)
-    getQuestionDB: (token) => {
+    getQuestionDB: (token, get_type, paper_index, student_id) => {
         return (
             axios({
                 method: "GET",
                 url: process.env.REACT_APP_BACKEND_MAIN_TEACHER,
                 params: {
-                    get_type: 'question_db'
+                    get_type: get_type,
+                    paper_index: paper_index || '',
+                    student_id: student_id || ''
                 },
                 headers: {
                     Authorization: 'Bearer ' + token,
