@@ -137,8 +137,8 @@ const Connection = {
             })
         )
     },
-    // 取得type
-    getQuestionType: (token, major_type_id, type_id) => {
+    // 取得Question type
+    getQuestionAttribute: (token, major_type_id, type_id) => {
         return (
             axios({
                 method: "GET",
@@ -154,6 +154,46 @@ const Connection = {
             })
         )
     },
+    // 取得 difficult type
+    getDifficultyType: (token) => {
+        return (
+            axios({
+                method: "GET",
+                url: process.env.REACT_APP_BACKEND_GET_DIFFICULTY_TYPE,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                }
+            })
+        )
+    },
+    // 取得 question category (單多選)
+    getQuestionCategoryType:(token)=>{
+        return(
+            axios({
+                method:"GET",
+                url: process.env.REACT_APP_BACKEND_GET_CATEGORY_TYPE,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                }
+            })
+        )
+    },
+    // 取得 bloom category (題目類型)
+    getBloomType:(token)=>{
+        return (
+            axios({
+                method: "GET",
+                url: process.env.REACT_APP_BACKEND_GET_BLOOM_TYPE,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                }
+            })
+        )
+    },
+
     // 輸入題目
     submitNewQuestion: (token, questionData) => {
         return (

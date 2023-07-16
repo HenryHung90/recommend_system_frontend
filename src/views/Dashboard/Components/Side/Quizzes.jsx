@@ -30,11 +30,22 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
     //題目敘述
     const [questionDescription, setQuestionDescription] = useState("");
 
+    //所有類型
+    const [questionCategoryType, setQuestionCategoryType] = useState([]);
     //類型（單選多選）
     const [questionType, setQuestionType] = useState("1");
     const handleChangeQuestionType = e => {
         setQuestionType(e.target.value.toString());
     };
+
+    //所有題型
+    const [questionBloomType, setQuestionBloomType] = useState([]);
+    //題型
+    const [bloomType, setBloomType] = useState("1");
+    const handleChangeBloomType = e => {
+        setBloomType(e.target.value.toString());
+    };
+
     // 所有屬性
     //major_question_type 主屬性
     //question_type 小屬性
@@ -42,6 +53,8 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
         major_question_type: [],
         question_type: [],
     });
+    // 所有難易度
+    const [questionDifficultyType, setQuestionDifficultyType] = useState([]);
     const mainType2Name = mainType => {
         for (const {
             type,
@@ -74,7 +87,7 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
         setQuestionAttribute(e.target.value.toString());
     };
     //難易度
-    const [questionDifficulty, setQuestionDifficulty] = useState("1");
+    const [questionDifficulty, setQuestionDifficulty] = useState("");
     const handleChangeQuestionDifficulty = e => {
         setQuestionDifficulty(e.target.value.toString());
     };
@@ -102,14 +115,53 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
 
     //取得所有屬性
     useEffect(() => {
-        Connection.getQuestionType(localStorage.getItem("token")).then(res => {
-            setQuestionAttributeType(res.data.result[0]);
-            console.log(res.data.result[0]);
+        //取得題目屬性
+        Connection.getQuestionAttribute(localStorage.getItem("token")).then(
+            res => {
+                if (res.data.state) {
+                    setQuestionAttributeType(res.data.result[0]);
+                } else {
+                    window.alert(res.data.msg);
+                }
+            }
+        );
+
+        //取得難易度
+        Connection.getDifficultyType(localStorage.getItem("token")).then(
+            res => {
+                if (res.data.state) {
+                    console.log(res.data);
+                    setQuestionDifficultyType(res.data.result[0]);
+                } else {
+                    window.alert(res.data.msg);
+                }
+            }
+        );
+
+        //取得題目類型(單、多選)
+        Connection.getQuestionCategoryType(localStorage.getItem("token")).then(
+            res => {
+                if (res.data.state) {
+                    setQuestionCategoryType(res.data.result);
+                } else {
+                    window.alert(res.data.msg);
+                }
+            }
+        );
+
+        //取得題型 (bloom)
+        Connection.getBloomType(localStorage.getItem("token")).then(res => {
+            if (res.data.state) {
+                setQuestionBloomType(res.data.result);
+            } else {
+                window.alert(res.data.msg);
+            }
         });
     }, []);
 
     useEffect(() => {
         if (type === "paper") {
+            console.log(questionDetail);
             setQuestionDescription(questionDetail.question);
             setQuestionType(questionDetail.category === "單選" ? "1" : "2");
             setQuestionMainAttribute(findMainType(questionDetail.type_id, 1));
@@ -125,6 +177,11 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
             setOption_5(
                 questionDetail.options5 === -1 ? "" : questionDetail.options5
             );
+            setBloomType(
+                questionDetail.bloom_type === -1
+                    ? ""
+                    : questionDetail.bloom_type
+            );
         } else {
             setQuestionDescription("");
             setQuestionType("");
@@ -136,6 +193,7 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
             setOption_3("");
             setOption_4("");
             setOption_5("");
+            setBloomType("");
         }
     }, [open]);
 
@@ -164,6 +222,7 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
         }
         questionData.append("difficulty", questionDifficulty);
         questionData.append("category", questionType);
+        questionData.append("bloom_type", bloomType);
 
         for (const [key, value] of questionData.entries())
             console.log(key, value);
@@ -263,8 +322,13 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                             onChange={handleChangeQuestionType}
                             label="題目類型"
                         >
-                            <MenuItem value={"1"}>單選</MenuItem>
-                            <MenuItem value={"2"}>多選</MenuItem>
+                            {questionCategoryType.map((category, index) => {
+                                return (
+                                    <MenuItem value={category.type}>
+                                        {category.type_name}
+                                    </MenuItem>
+                                );
+                            })}
                         </Select>
                     </FormControl>
                     <FormControl
@@ -337,6 +401,28 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                         margin="normal"
                         sx={{ padding: "0 5px" }}
                     >
+                        <InputLabel>題型</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-standard-label"
+                            value={bloomType}
+                            onChange={handleChangeBloomType}
+                            label="題型"
+                        >
+                            {questionBloomType.map((bloom, index) => {
+                                return (
+                                    <MenuItem value={bloom.type}>
+                                        {bloom.type_name}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl
+                        variant="standard"
+                        fullWidth
+                        margin="normal"
+                        sx={{ padding: "0 5px" }}
+                    >
                         <InputLabel>題目難易度</InputLabel>
                         <Select
                             labelId="demo-simple-select-standard-label"
@@ -344,8 +430,13 @@ const QuestionDialog = ({ open, close, setLoading, questionDetail, type }) => {
                             onChange={handleChangeQuestionDifficulty}
                             label="題目難易度"
                         >
-                            <MenuItem value={"1"}>1</MenuItem>
-                            <MenuItem value={"2"}>2</MenuItem>
+                            {questionDifficultyType.map((type, index) => {
+                                return (
+                                    <MenuItem value={type.type}>
+                                        {type.type_name}
+                                    </MenuItem>
+                                );
+                            })}
                         </Select>
                     </FormControl>
                 </Box>

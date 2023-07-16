@@ -19,6 +19,7 @@ import {
     Select,
     MenuItem,
 } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 
 import ChartComponent_Column from "../../../Components/Chart/ChartComponent_Column";
 
@@ -42,7 +43,55 @@ const ScoreDstributedModel = () => {
     return tempAry;
 };
 
-const PaperInformation = ({ open, close, setLoading, paperIndex }) => {
+const StudentInformation = ({
+    open,
+    close,
+    setLoading,
+    paperIndex,
+    studentInfo,
+}) => {
+    useEffect(() => {
+        if (paperIndex === null) return;
+        if (studentInfo === null) return;
+        console.log(studentInfo)
+
+        Connection.getQuestionDB(
+            localStorage.getItem("token"),
+            "student_status",
+            "",
+            studentInfo.student_id
+        ).then(res => {
+            console.log(res)
+            if (res.data.state) {
+            } else {
+                window.alert(res.data.msg);
+            }
+        });
+    }, [open]);
+
+    return (
+        <Dialog open={open} onClose={close} fullWidth={true} maxWidth={"lg"}>
+            <DialogTitle sx={{ fontSize: 36 }}>
+                {studentInfo.class_type} | {studentInfo.ACCOUNT} |{" "}
+                {studentInfo.NAME}
+            </DialogTitle>
+            <DialogContent></DialogContent>
+            <DialogActions>
+                <Button onClick={close}>取消</Button>
+            </DialogActions>
+        </Dialog>
+    );
+};
+
+//考卷內容詳情
+const PaperInformation = ({
+    open,
+    close,
+    setLoading,
+    paperIndex,
+    setStudentInfo,
+    setStudentDialogOpen,
+}) => {
     // 學生總群集
     const [studentList, setStudentList] = useState([]);
     // 學生分班
@@ -58,6 +107,21 @@ const PaperInformation = ({ open, close, setLoading, paperIndex }) => {
 
     //儲存現在選擇班級
     const [selectedClassify, setSelectedClassify] = useState("all");
+
+    // DataGrid 欄位名稱
+    const columns = [
+        { field: "class_type", headerName: "班級", width: 100 },
+        { field: "ACCOUNT", headerName: "學號", width: 130 },
+        { field: "NAME", headerName: "姓名", width: 120 },
+        { field: "answered_on", headerName: "答題時間", width: 200 },
+        { field: "total_question", headerName: "總題數", width: 100 },
+        { field: "answered_right", headerName: "答對題數", width: 100 },
+        { field: "score", headerName: "分數", width: 120 },
+    ];
+    const handleStudentsInfoClick = e => {
+        setStudentInfo(e.row);
+        setStudentDialogOpen(true);
+    };
 
     // 點擊考卷後更新 studentList
     useEffect(() => {
@@ -178,7 +242,7 @@ const PaperInformation = ({ open, close, setLoading, paperIndex }) => {
     }, [studentList]);
 
     return (
-        <Dialog open={open} onClose={close} fullWidth={true} maxWidth={"md"}>
+        <Dialog open={open} onClose={close} fullWidth={true} maxWidth={"lg"}>
             <DialogTitle sx={{ fontSize: 36, textAlign: "center" }}>
                 卷次 {paperIndex}
             </DialogTitle>
@@ -284,17 +348,39 @@ const PaperInformation = ({ open, close, setLoading, paperIndex }) => {
                     })}
                 </Box>
                 {/* 成績分布直方圖 */}
-                <ChartComponent_Column
-                    caption={"成績分布直方圖"}
-                    dataSource={paperScoreDistributed[selectedClassify]}
-                    series={["人數"]}
-                    xAxisName={"分數區間"}
-                    xAxisUnitInterval={1}
-                    yAxisName={"人數"}
-                    yAxisUnitInterval={10}
-                    yAxisMinValue={0}
-                    yAxisMaxValue={50}
-                />
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <ChartComponent_Column
+                        caption={"成績分布直方圖"}
+                        dataSource={paperScoreDistributed[selectedClassify]}
+                        series={["人數"]}
+                        xAxisName={"分數區間"}
+                        xAxisUnitInterval={1}
+                        yAxisName={"人數"}
+                        yAxisUnitInterval={10}
+                        yAxisMinValue={0}
+                        yAxisMaxValue={50}
+                    />
+                </Box>
+                {/* 學生列表 */}
+                <Box>
+                    <DataGrid
+                        rows={
+                            selectedClassify === "all"
+                                ? studentList
+                                : studentClassify[selectedClassify].students
+                        }
+                        columns={columns}
+                        initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 10 },
+                            },
+                        }}
+                        getRowId={row => row.student_id}
+                        pageSizeOptions={[5, 10, 50, 100]}
+                        disableColumnSelector
+                        onRowClick={handleStudentsInfoClick}
+                    />
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button onClick={close}>取消</Button>
@@ -348,12 +434,20 @@ const Papers = ({ setLoading }) => {
     const [paperList, setPaperList] = useState([]);
     // 現在點開哪一個卷次
     const [paperIndex, setPaperIndex] = useState(null);
-    // 點開之Dialog 控制
+    // 點開之 paper Dialog 控制
     const [paperDialogOpen, setPaperDialogOpen] = useState(false);
-
+    // 點開之 student Dialog 控制
+    const [studentDialogOpen, setStudentDialogOpen] = useState(false);
+    // 學生資訊
+    const [studentInfo, setStudentInfo] = useState({});
+    // 關閉 paperInformation 動作
     const handleClosePaperDialog = () => {
         setPaperDialogOpen(false);
         setPaperIndex(null);
+    };
+    const handleCloseStudentDialog = () => {
+        setStudentDialogOpen(false);
+        setStudentInfo({});
     };
 
     useEffect(() => {
@@ -379,11 +473,20 @@ const Papers = ({ setLoading }) => {
                 height: "80vh",
             }}
         >
+            <StudentInformation
+                open={studentDialogOpen}
+                close={() => handleCloseStudentDialog()}
+                setLoading={setLoading}
+                paperIndex={paperIndex}
+                studentInfo={studentInfo}
+            />
             <PaperInformation
                 open={paperDialogOpen}
                 close={() => handleClosePaperDialog()}
                 setLoading={setLoading}
                 paperIndex={paperIndex}
+                setStudentInfo={setStudentInfo}
+                setStudentDialogOpen={setStudentDialogOpen}
             />
             {paperList.map((paper, index) => {
                 return (

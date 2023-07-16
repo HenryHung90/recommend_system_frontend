@@ -30,7 +30,7 @@ const ChartComponent_Column = ({
     };
     // Ttitle 的 padding
     const titlePadding = {
-        left: 90,
+        left: 100,
         top: 0,
         right: 0,
         bottom: 10,
@@ -130,20 +130,18 @@ const ChartComponent_Column = ({
     });
 
     return (
-        <div>
-            <Chart
-                caption={caption}
-                description={description}
-                showLegend={showLegend}
-                padding={padding}
-                titlePadding={titlePadding}
-                dataSource={dataSource}
-                colorScheme={colorScheme}
-                xAxis={xAxis}
-                valueAxis={valueAxis}
-                seriesGroups={seriesGroups}
-            ></Chart>
-        </div>
+        <Chart
+            caption={caption}
+            description={description}
+            showLegend={showLegend}
+            padding={padding}
+            titlePadding={titlePadding}
+            dataSource={dataSource}
+            colorScheme={colorScheme}
+            xAxis={xAxis}
+            valueAxis={valueAxis}
+            seriesGroups={seriesGroups}
+        ></Chart>
     );
 };
 

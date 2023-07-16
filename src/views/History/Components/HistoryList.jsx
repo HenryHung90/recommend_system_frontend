@@ -105,7 +105,7 @@ const HistoryList = ({
         setLoading(true);
         Connection.getAllCompleteExamSheets(localStorage.getItem("token")).then(
             res => {
-                if (res.data.status) {
+                if (res.data.state) {
                     setExamHistory(res.data.result);
                     setLoading(false);
                 } else {
