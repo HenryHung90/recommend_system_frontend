@@ -22,6 +22,8 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 
 import ChartComponent_Column from "../../../Components/Chart/ChartComponent_Column";
+import ChartComponent_PieChart from "../../../Components/Chart/ChartComponent_PieChart";
+import ChartComponent_Line from "../../../Components/Chart/ChartComponent_Line";
 
 //分數區間Model
 const ScoreDstributedModel = () => {
@@ -50,10 +52,19 @@ const StudentInformation = ({
     paperIndex,
     studentInfo,
 }) => {
+    // 學生完整資訊(三種題型的答題次數、正確次數)
+    const [studentTotalDetail, setStudentTotalDetail] = useState({});
+    // 學生卷次資訊
+    const [studentPaperInformation, setStudentPaperInformation] = useState([]);
+    // 圓餅圖資訊
+    const [studentPieChartInfomation, setStudentPieChartInfomation] = useState(
+        []
+    );
+
+    // 學生資料下載
     useEffect(() => {
         if (paperIndex === null) return;
-        if (studentInfo === null) return;
-        console.log(studentInfo)
+        if (studentInfo.student_id === undefined) return;
 
         Connection.getQuestionDB(
             localStorage.getItem("token"),
@@ -61,8 +72,59 @@ const StudentInformation = ({
             "",
             studentInfo.student_id
         ).then(res => {
-            console.log(res)
             if (res.data.state) {
+                let tempStudentTotalDetail =
+                    res.data.result[0].student_detail[0];
+
+                // 儲存總計統計資料
+                tempStudentTotalDetail["total_answer"] =
+                    tempStudentTotalDetail.answer_css +
+                    tempStudentTotalDetail.answer_html +
+                    tempStudentTotalDetail.answer_javascript;
+
+                tempStudentTotalDetail["total_correct"] =
+                    tempStudentTotalDetail.correct_css +
+                    tempStudentTotalDetail.correct_html +
+                    tempStudentTotalDetail.correct_javascript;
+
+                tempStudentTotalDetail["correct_rate"] = (
+                    (tempStudentTotalDetail.total_correct /
+                        tempStudentTotalDetail.total_answer) *
+                    100
+                ).toFixed(2);
+
+                // 儲存圓餅圖用資訊
+                let tempStudentPieChartInfomation = [];
+                tempStudentPieChartInfomation.push({
+                    名稱: "html",
+                    答題次數: tempStudentTotalDetail.answer_html,
+                    正確次數: tempStudentTotalDetail.correct_html,
+                });
+                tempStudentPieChartInfomation.push({
+                    名稱: "css",
+                    答題次數: tempStudentTotalDetail.answer_css,
+                    正確次數: tempStudentTotalDetail.correct_css,
+                });
+
+                tempStudentPieChartInfomation.push({
+                    名稱: "javascript",
+                    答題次數: tempStudentTotalDetail.answer_javascript,
+                    正確次數: tempStudentTotalDetail.correct_javascript,
+                });
+
+                // 儲存線條圖用資訊
+                let tempStudentPaperInfomation = [];
+                res.data.result[1].student_paper.map(value => {
+                    tempStudentPaperInfomation.push({
+                        分數: value.score,
+                        交卷時間: value.answered_on,
+                        類型: value.paper_type,
+                        卷次: value.paper_index,
+                    });
+                });
+                setStudentPieChartInfomation(tempStudentPieChartInfomation);
+                setStudentTotalDetail(tempStudentTotalDetail);
+                setStudentPaperInformation(tempStudentPaperInfomation);
             } else {
                 window.alert(res.data.msg);
             }
@@ -75,7 +137,113 @@ const StudentInformation = ({
                 {studentInfo.class_type} | {studentInfo.ACCOUNT} |{" "}
                 {studentInfo.NAME}
             </DialogTitle>
-            <DialogContent></DialogContent>
+            <DialogContent
+                sx={{
+                    textAlign: "center",
+                }}
+            >
+                <DialogTitle>統計資料</DialogTitle>
+                {/* 重要資訊 */}
+                <Box
+                    sx={{
+                        width: "100%",
+                    }}
+                >
+                    {[
+                        {
+                            name: "總答題數",
+                            count: studentTotalDetail["total_answer"],
+                            label: "題",
+                        },
+                        {
+                            name: "總正確數",
+                            count: studentTotalDetail["total_correct"],
+                            label: "題",
+                        },
+                        {
+                            name: "總正確率",
+                            count: studentTotalDetail["correct_rate"],
+                            label: "%",
+                        },
+                    ].map((value, index) => {
+                        return (
+                            <Card
+                                key={index}
+                                sx={{
+                                    minWidth: 150,
+                                    margin: "2px 10px",
+                                    display: "inline-block",
+                                }}
+                            >
+                                <CardContent>
+                                    <Typography
+                                        variant="p"
+                                        component="div"
+                                        color="gray"
+                                        textAlign={"left"}
+                                    >
+                                        {value.name}
+                                    </Typography>
+                                    <Typography
+                                        variant="h4"
+                                        component="div"
+                                        textAlign={"center"}
+                                    >
+                                        {value.count}
+                                    </Typography>
+                                    <Typography
+                                        variant="p"
+                                        component="div"
+                                        color="gray"
+                                        textAlign={"right"}
+                                    >
+                                        {value.label}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                >
+                    <ChartComponent_PieChart
+                        caption={"題目回答數"}
+                        dataSource={studentPieChartInfomation}
+                        series={[
+                            { dataField: "答題次數", displayText: "名稱" },
+                        ]}
+                    />
+                    <ChartComponent_PieChart
+                        caption={"題目正確數"}
+                        dataSource={studentPieChartInfomation}
+                        series={[
+                            { dataField: "正確次數", displayText: "名稱" },
+                        ]}
+                    />
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                >
+                    <ChartComponent_Line
+                        caption={"歷次成績"}
+                        dataSource={studentPaperInformation}
+                        series={[{dataField:"分數", displayText: "分數"}]}
+                        xAxisName={"卷次"}
+                        xAxisUnitInterval={1}
+                        yAxisName={"分數"}
+                        yAxisUnitInterval={10}
+                        yAxisMinValue={0}
+                        yAxisMaxValue={100}
+                    />
+                </Box>
+            </DialogContent>
             <DialogActions>
                 <Button onClick={close}>取消</Button>
             </DialogActions>
@@ -240,7 +408,6 @@ const PaperInformation = ({
         setPaperAvgRightQuestion(tempStudentAvgRightQuestion);
         setPaperScoreDistributed(tempStudentScoreDistributed);
     }, [studentList]);
-
     return (
         <Dialog open={open} onClose={close} fullWidth={true} maxWidth={"lg"}>
             <DialogTitle sx={{ fontSize: 36, textAlign: "center" }}>
@@ -350,7 +517,7 @@ const PaperInformation = ({
                 {/* 成績分布直方圖 */}
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <ChartComponent_Column
-                        caption={"成績分布直方圖"}
+                        caption={"成績分布"}
                         dataSource={paperScoreDistributed[selectedClassify]}
                         series={["人數"]}
                         xAxisName={"分數區間"}
