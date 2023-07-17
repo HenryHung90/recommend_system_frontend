@@ -14,6 +14,19 @@ const Connection = {
             })
         )
     },
+    //登出
+    logout: (token) => {
+        return (
+            axios({
+                method: "POST",
+                url: process.env.REACT_APP_BACKEND_LOGOUT,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    "Content-Type": 'application/json',
+                }
+            })
+        )
+    },
     // 解碼 jwt token
     decode: token => JSON.parse(decodeURIComponent(atob(token.split('.')[1].replace('-', '+').replace('_', '/')).split('').map(c => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`).join(''))),
     // 更新 token
@@ -168,10 +181,10 @@ const Connection = {
         )
     },
     // 取得 question category (單多選)
-    getQuestionCategoryType:(token)=>{
-        return(
+    getQuestionCategoryType: (token) => {
+        return (
             axios({
-                method:"GET",
+                method: "GET",
                 url: process.env.REACT_APP_BACKEND_GET_CATEGORY_TYPE,
                 headers: {
                     Authorization: 'Bearer ' + token,
@@ -181,7 +194,7 @@ const Connection = {
         )
     },
     // 取得 bloom category (題目類型)
-    getBloomType:(token)=>{
+    getBloomType: (token) => {
         return (
             axios({
                 method: "GET",

@@ -10,7 +10,7 @@ import Loading from "../Components/Loading/Loading";
 import { Nav, NavList } from "../Components/Nav/Nav";
 import CenterBtn from "./Components/CenterBtn";
 
-const Home = ({ UserName }) => {
+const Home = ({ UserName, Teacher }) => {
     const [NavBarOpen, setNavBarOpen] = useState(false);
     const [ContainerFade, setContainerFade] = useState(true);
     const navExamming = useNavigate();
@@ -61,6 +61,7 @@ const Home = ({ UserName }) => {
                         setNavBarOpen={setNavBarOpen}
                         UserName={UserName}
                         setContainerFade={setContainerFade}
+                        Teacher={Teacher}
                     />
                     {/* Block區塊 */}
                     <Box

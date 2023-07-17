@@ -48,7 +48,7 @@ const App = () => {
     const BasicRoutes = () => {
         return (
             <>
-                <Route path='/home' element={< Home UserName={UserName} />} />
+                <Route path='/home' element={< Home UserName={UserName} Teacher={Teacher}/>} />
                 <Route path="/exam" element={<Exam UserName={UserName} />} />
                 <Route path="/statistics" element={<Statistics UserName={UserName} />} />
                 <Route path="/history" element={<History UserName={UserName} />} />

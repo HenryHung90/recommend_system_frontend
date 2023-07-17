@@ -53,6 +53,12 @@ const NavList = [
         SideImg: "url(../media/Bookmarks.jpg)",
         NavOnly: false,
     },
+    {
+        Type: "Logout",
+        SideContent: "登出",
+        Status: true,
+        NavOnly: true,
+    },
     // {
     //     Type: "Interactive",
     //     SideContent: "互動",
@@ -63,7 +69,7 @@ const NavList = [
     // },
 ];
 
-const Nav = ({ NavBarOpen, setNavBarOpen, UserName }) => {
+const Nav = ({ NavBarOpen, setNavBarOpen, UserName, Teacher }) => {
     const NavLocation = useNavigate();
 
     const NavIconBoxStyle = {

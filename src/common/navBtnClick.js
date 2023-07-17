@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import { Connection } from './axiosConnect'
 
 // 處理Click Navbar部分的事件
 const handleTargetId = (Id, NavLocation) => {
@@ -41,7 +42,13 @@ const handleTargetId = (Id, NavLocation) => {
 const handleNavBtnClick = (e, NavBarOpen, NavLocation) => {
     if (NavBarOpen) {
         e.stopPropagation()
-        handleTargetId(e.currentTarget.id.split("_")[2], NavLocation)
+        if (e.currentTarget.id.split("_")[2] == "Logout"){
+            Connection.logout(localStorage.getItem("token"))
+            localStorage.clear()
+            window.location.href = '/'
+        }else{
+            handleTargetId(e.currentTarget.id.split("_")[2], NavLocation)
+        }
     }
 };
 
